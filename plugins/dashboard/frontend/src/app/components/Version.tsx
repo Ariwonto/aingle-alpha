@@ -17,7 +17,7 @@ export default class Version extends React.Component<Props, any> {
                 Version {this.props.nodeStore.status.version}
                 <If condition={!this.props.nodeStore.isLatestVersion}>
                     {' '}
-                    <Button href="https://github.com/gohornet/hornet/releases/latest"
+                    <Button href="https://github.com/Ariwonto/aingle-alpha/releases/latest"
                             size="sm"
                             variant="outline-info">Update available</Button>
                 </If>

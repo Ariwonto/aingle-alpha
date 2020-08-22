@@ -70,12 +70,23 @@ func configure(plugin *node.Plugin) {
 	}
 
 	fmt.Printf(`
-              ██╗  ██╗ ██████╗ ██████╗ ███╗   ██╗███████╗████████╗
-              ██║  ██║██╔═══██╗██╔══██╗████╗  ██║██╔════╝╚══██╔══╝
-              ███████║██║   ██║██████╔╝██╔██╗ ██║█████╗     ██║
-              ██╔══██║██║   ██║██╔══██╗██║╚██╗██║██╔══╝     ██║
-              ██║  ██║╚██████╔╝██║  ██║██║ ╚████║███████╗   ██║
-              ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝
+  O  o-O-o           o     
+ / \   |             |     
+o---o  |   o-o  o--o | o-o 
+|   |  |   |  | |  | | |-' 
+o   oo-O-o o  o o--O o o-o 
+                   |       
+                o--o 
+                                   v%s
+`+"\n\n", AppVersion)
+
+	fmt.Printf(`
+ _______                                   
+(_______)                _                 
+ _____    _____   ___  _| |_  _____   ____ 
+|  ___)  (____ | /___)(_   _)| ___ | / ___)
+| |      / ___ ||___ |  | |_ | ____|| |    
+|_|      \_____|(___/    \__)|_____)|_| 
                                    v%s
 `+"\n\n", AppVersion)
 
@@ -120,7 +131,7 @@ func checkLatestVersion() {
 	}
 
 	if res.Outdated {
-		log.Infof("Update to %s available on https://github.com/gohornet/hornet/releases/latest", res.Current)
+		log.Infof("Update to %s available on https://github.com/Ariwonto/aingle-alpha/releases/latest", res.Current)
 		LatestGithubVersion = res.Current
 	}
 }
