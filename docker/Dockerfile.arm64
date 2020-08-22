@@ -1,12 +1,12 @@
 FROM alpine:latest
 
-ARG REPO="iotaledger/hornet"
+ARG REPO="Ariwonto/aingle-alpha"
 ARG TAG=latest
 ARG ARCH=ARM64
 ARG OS=Linux
 
 LABEL org.label-schema.description="HORNET - The IOTA community node"
-LABEL org.label-schema.name="iotaledger/hornet"
+LABEL org.label-schema.name="Ariwonto/aingle-alpha"
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.vcs-url="https://https://github.com/Ariwonto/aingle-alpha"
 LABEL org.label-schema.usage="https://https://github.com/Ariwonto/aingle-alpha/blob/master/DOCKER.md"
