@@ -16,22 +16,22 @@ import (
 	"github.com/iotaledger/hive.go/websockethub"
 	"github.com/iotaledger/hive.go/workerpool"
 
-	"github.com/gohornet/hornet/pkg/basicauth"
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol/sting"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/plugins/autopeering"
-	"github.com/gohornet/hornet/plugins/cli"
-	databaseplugin "github.com/gohornet/hornet/plugins/database"
-	"github.com/gohornet/hornet/plugins/gossip"
-	metricsplugin "github.com/gohornet/hornet/plugins/metrics"
-	"github.com/gohornet/hornet/plugins/peering"
-	tangleplugin "github.com/gohornet/hornet/plugins/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/basicauth"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/sting"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/plugins/autopeering"
+	"github.com/Ariwonto/aingle-alpha/plugins/cli"
+	databaseplugin "github.com/Ariwonto/aingle-alpha/plugins/database"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
+	metricsplugin "github.com/Ariwonto/aingle-alpha/plugins/metrics"
+	"github.com/Ariwonto/aingle-alpha/plugins/peering"
+	tangleplugin "github.com/Ariwonto/aingle-alpha/plugins/tangle"
 )
 
 var (
@@ -176,7 +176,7 @@ func run(_ *node.Plugin) {
 	runSpammerMetricWorker()
 }
 
-func getMilestoneTailHash(index milestone.Index) hornet.Hash {
+func getMilestoneTailHash(index milestone.Index) aingle.Hash {
 	cachedMs := tangle.GetMilestoneOrNil(index) // bundle +1
 	if cachedMs == nil {
 		return nil

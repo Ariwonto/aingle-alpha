@@ -8,9 +8,9 @@ import (
 	"github.com/iotaledger/hive.go/events"
 	"github.com/iotaledger/hive.go/timeutil"
 
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/plugins/database"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/plugins/database"
 )
 
 var (

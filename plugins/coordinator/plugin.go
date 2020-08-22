@@ -16,19 +16,19 @@ import (
 	"github.com/iotaledger/iota.go/consts"
 	"github.com/iotaledger/iota.go/transaction"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/dag"
-	"github.com/gohornet/hornet/pkg/model/coordinator"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/mselection"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	powpackage "github.com/gohornet/hornet/pkg/pow"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/pkg/whiteflag"
-	"github.com/gohornet/hornet/plugins/gossip"
-	"github.com/gohornet/hornet/plugins/pow"
-	tangleplugin "github.com/gohornet/hornet/plugins/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/dag"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/coordinator"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/mselection"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	powpackage "github.com/Ariwonto/aingle-alpha/pkg/pow"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/whiteflag"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
+	"github.com/Ariwonto/aingle-alpha/plugins/pow"
+	tangleplugin "github.com/Ariwonto/aingle-alpha/plugins/tangle"
 )
 
 func init() {
@@ -53,8 +53,8 @@ var (
 	selector *mselection.HeaviestSelector
 
 	lastCheckpointIndex int
-	lastCheckpointHash  hornet.Hash
-	lastMilestoneHash   hornet.Hash
+	lastCheckpointHash  aingle.Hash
+	lastMilestoneHash   aingle.Hash
 
 	// Closures
 	onBundleSolid                 *events.Closure
@@ -248,7 +248,7 @@ func sendBundle(b coordinator.Bundle, isMilestone bool) error {
 	// collect all tx hashes of the bundle
 	txHashes := make(map[string]struct{})
 	for _, t := range b {
-		txHashes[string(hornet.HashFromHashTrytes(t.Hash))] = struct{}{}
+		txHashes[string(aingle.HashFromHashTrytes(t.Hash))] = struct{}{}
 	}
 
 	txHashesLock := syncutils.Mutex{}
@@ -262,7 +262,7 @@ func sendBundle(b coordinator.Bundle, isMilestone bool) error {
 		wgBundleProcessed.Add(1)
 	}
 
-	onProcessedTransaction := events.NewClosure(func(txHash hornet.Hash) {
+	onProcessedTransaction := events.NewClosure(func(txHash aingle.Hash) {
 		txHashesLock.Lock()
 		defer txHashesLock.Unlock()
 
@@ -365,11 +365,11 @@ func configureEvents() {
 		log.Debugf("UpdateTransactionRootSnapshotIndexes finished, took: %v", time.Since(ts).Truncate(time.Millisecond))
 	})
 
-	onIssuedCheckpointTransaction = events.NewClosure(func(checkpointIndex int, tipIndex int, tipsTotal int, txHash hornet.Hash) {
+	onIssuedCheckpointTransaction = events.NewClosure(func(checkpointIndex int, tipIndex int, tipsTotal int, txHash aingle.Hash) {
 		log.Infof("checkpoint (%d) transaction issued (%d/%d): %v", checkpointIndex+1, tipIndex+1, tipsTotal, txHash.Trytes())
 	})
 
-	onIssuedMilestone = events.NewClosure(func(index milestone.Index, tailTxHash hornet.Hash) {
+	onIssuedMilestone = events.NewClosure(func(index milestone.Index, tailTxHash aingle.Hash) {
 		log.Infof("milestone issued (%d): %v", index, tailTxHash.Trytes())
 	})
 }

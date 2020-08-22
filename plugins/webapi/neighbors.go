@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/plugins/peering"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/plugins/peering"
 )
 
 func init() {
@@ -20,7 +20,7 @@ func init() {
 
 func addNeighbors(i interface{}, c *gin.Context, _ <-chan struct{}) {
 
-	// Check if HORNET style addNeighbors call was made
+	// Check if AINGLE style addNeighbors call was made
 	queryHornet := &AddNeighborsHornet{}
 	if err := mapstructure.Decode(i, queryHornet); err == nil {
 		if len(queryHornet.Neighbors) != 0 {

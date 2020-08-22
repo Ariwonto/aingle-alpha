@@ -9,9 +9,9 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 func init() {
@@ -47,7 +47,7 @@ func getLedgerDiff(i interface{}, c *gin.Context, abortSignal <-chan struct{}) {
 
 	diffTrytes := make(map[trinary.Trytes]int64)
 	for address, balance := range diff {
-		diffTrytes[hornet.Hash(address).Trytes()] = balance
+		diffTrytes[aingle.Hash(address).Trytes()] = balance
 	}
 
 	c.JSON(http.StatusOK, GetLedgerDiffReturn{Diff: diffTrytes, MilestoneIndex: query.MilestoneIndex})
@@ -80,7 +80,7 @@ func getLedgerDiffExt(i interface{}, c *gin.Context, _ <-chan struct{}) {
 
 	ledgerChangesTrytes := make(map[trinary.Trytes]int64)
 	for address, balance := range ledgerChanges {
-		ledgerChangesTrytes[hornet.Hash(address).Trytes()] = balance
+		ledgerChangesTrytes[aingle.Hash(address).Trytes()] = balance
 	}
 
 	result := GetLedgerDiffExtReturn{}
@@ -119,14 +119,14 @@ func getMilestoneStateDiff(milestoneIndex milestone.Index) (confirmedTxWithValue
 				continue
 			}
 
-			if tangle.SolidEntryPointsContain(hornet.Hash(txHash)) {
+			if tangle.SolidEntryPointsContain(aingle.Hash(txHash)) {
 				// Ignore solid entry points (snapshot milestone included)
 				continue
 			}
 
-			cachedTxMeta := tangle.GetCachedTxMetadataOrNil(hornet.Hash(txHash)) // meta +1
+			cachedTxMeta := tangle.GetCachedTxMetadataOrNil(aingle.Hash(txHash)) // meta +1
 			if cachedTxMeta == nil {
-				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Transaction not found: %v", hornet.Hash(txHash).Trytes())
+				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Transaction not found: %v", aingle.Hash(txHash).Trytes())
 			}
 
 			confirmed, at := cachedTxMeta.GetMetadata().GetConfirmed()
@@ -138,7 +138,7 @@ func getMilestoneStateDiff(milestoneIndex milestone.Index) (confirmedTxWithValue
 				}
 			} else {
 				cachedTxMeta.Release(true) // meta -1
-				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Transaction not confirmed yet: %v", hornet.Hash(txHash).Trytes())
+				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Transaction not confirmed yet: %v", aingle.Hash(txHash).Trytes())
 			}
 
 			// Mark the approvees to be traversed
@@ -150,18 +150,18 @@ func getMilestoneStateDiff(milestoneIndex milestone.Index) (confirmedTxWithValue
 				continue
 			}
 
-			cachedBndl := tangle.GetCachedBundleOrNil(hornet.Hash(txHash)) // bundle +1
+			cachedBndl := tangle.GetCachedBundleOrNil(aingle.Hash(txHash)) // bundle +1
 			if cachedBndl == nil {
 				txBundle := cachedTxMeta.GetMetadata().GetBundleHash()
 				cachedTxMeta.Release(true) // meta -1
-				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Tx: %v, Bundle not found: %v", hornet.Hash(txHash).Trytes(), txBundle.Trytes())
+				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Tx: %v, Bundle not found: %v", aingle.Hash(txHash).Trytes(), txBundle.Trytes())
 			}
 
 			if !cachedBndl.GetBundle().IsValid() {
 				txBundle := cachedTxMeta.GetMetadata().GetBundleHash()
 				cachedTxMeta.Release(true) // meta -1
 				cachedBndl.Release(true)   // bundle -1
-				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Tx: %v, Bundle not valid: %v", hornet.Hash(txHash).Trytes(), txBundle.Trytes())
+				return nil, nil, nil, fmt.Errorf("getMilestoneStateDiff: Tx: %v, Bundle not valid: %v", aingle.Hash(txHash).Trytes(), txBundle.Trytes())
 			}
 
 			if !cachedBndl.GetBundle().IsValueSpam() {
@@ -221,7 +221,7 @@ func getLedgerState(i interface{}, c *gin.Context, abortSignal <-chan struct{}) 
 
 	balancesTrytes := make(map[trinary.Trytes]uint64)
 	for address, balance := range balances {
-		balancesTrytes[hornet.Hash(address).Trytes()] = balance
+		balancesTrytes[aingle.Hash(address).Trytes()] = balance
 	}
 
 	c.JSON(http.StatusOK, GetLedgerStateReturn{Balances: balancesTrytes, MilestoneIndex: index})

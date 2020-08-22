@@ -30,7 +30,7 @@ const (
 
 func init() {
 	flag.String(CfgSpammerAddress, "HORNET99INTEGRATED99SPAMMER999999999999999999999999999999999999999999999999999999", "the target address of the spam")
-	flag.String(CfgSpammerMessage, "Spamming with HORNET tipselect", "the message to embed within the spam transactions")
+	flag.String(CfgSpammerMessage, "Spamming with AINGLE tipselect", "the message to embed within the spam transactions")
 	flag.String(CfgSpammerTag, "HORNET99SPAMMER999999999999", "the tag of the transaction")
 	flag.String(CfgSpammerTagSemiLazy, "", "the tag of the transaction if the semi-lazy pool is used (uses \"tag\" if empty)")
 	flag.Float64(CfgSpammerCPUMaxUsage, 0.50, "workers remains idle for a while when cpu usage gets over this limit (0 = disable)")

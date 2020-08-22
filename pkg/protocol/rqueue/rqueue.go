@@ -7,8 +7,8 @@ import (
 
 	"go.uber.org/atomic"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 // Queue implements a queue which contains requests for needed data.
@@ -20,18 +20,18 @@ type Queue interface {
 	// Enqueue enqueues the given request if it isn't already queued or pending.
 	Enqueue(*Request) (enqueued bool)
 	// IsQueued tells whether a given request for the given transaction hash is queued.
-	IsQueued(hash hornet.Hash) bool
+	IsQueued(hash aingle.Hash) bool
 	// IsPending tells whether a given request was popped from the queue and is now pending.
-	IsPending(hash hornet.Hash) bool
+	IsPending(hash aingle.Hash) bool
 	// IsProcessing tells whether a given request was popped from the queue, received and is now processing.
-	IsProcessing(hash hornet.Hash) bool
+	IsProcessing(hash aingle.Hash) bool
 	// Received marks a request as received and thereby removes it from the pending set.
 	// It is added to the processing set.
 	// Returns the origin request which was pending or nil if the hash was not requested.
-	Received(hash hornet.Hash) *Request
+	Received(hash aingle.Hash) *Request
 	// Processed marks a request as fulfilled and thereby removes it from the processing set.
 	// Returns the origin request which was pending or nil if the hash was not requested.
-	Processed(hash hornet.Hash) *Request
+	Processed(hash aingle.Hash) *Request
 	// EnqueuePending enqueues all pending requests back into the queue.
 	// It also discards requests in the pending set of which their enqueue time is over the given delta threshold.
 	// If discardOlderThan is zero, no requests are discarded.
@@ -73,7 +73,7 @@ func New(latencyResolution ...int32) Queue {
 // Request is a request for a particular transaction.
 type Request struct {
 	// The hash of the transaction to request.
-	Hash hornet.Hash
+	Hash aingle.Hash
 	// The milestone index under which this request is linked.
 	MilestoneIndex milestone.Index
 	// internal to the priority queue
@@ -133,28 +133,28 @@ func (pq *priorityqueue) Enqueue(r *Request) bool {
 	return true
 }
 
-func (pq *priorityqueue) IsQueued(hash hornet.Hash) bool {
+func (pq *priorityqueue) IsQueued(hash aingle.Hash) bool {
 	pq.RLock()
 	_, k := pq.queued[string(hash)]
 	pq.RUnlock()
 	return k
 }
 
-func (pq *priorityqueue) IsPending(hash hornet.Hash) bool {
+func (pq *priorityqueue) IsPending(hash aingle.Hash) bool {
 	pq.RLock()
 	_, k := pq.pending[string(hash)]
 	pq.RUnlock()
 	return k
 }
 
-func (pq *priorityqueue) IsProcessing(hash hornet.Hash) bool {
+func (pq *priorityqueue) IsProcessing(hash aingle.Hash) bool {
 	pq.RLock()
 	_, k := pq.processing[string(hash)]
 	pq.RUnlock()
 	return k
 }
 
-func (pq *priorityqueue) Received(hash hornet.Hash) *Request {
+func (pq *priorityqueue) Received(hash aingle.Hash) *Request {
 	pq.Lock()
 	defer pq.Unlock()
 
@@ -182,7 +182,7 @@ func (pq *priorityqueue) Received(hash hornet.Hash) *Request {
 	return pq.queued[string(hash)]
 }
 
-func (pq *priorityqueue) Processed(hash hornet.Hash) *Request {
+func (pq *priorityqueue) Processed(hash aingle.Hash) *Request {
 	pq.Lock()
 	req, wasProcessing := pq.processing[string(hash)]
 	if wasProcessing {

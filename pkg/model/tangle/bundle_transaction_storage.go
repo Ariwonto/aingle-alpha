@@ -8,8 +8,8 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 const (
@@ -20,11 +20,11 @@ var (
 	bundleTransactionsStorage *objectstorage.ObjectStorage
 )
 
-func databaseKeyPrefixForBundleHash(bundleHash hornet.Hash) []byte {
+func databaseKeyPrefixForBundleHash(bundleHash aingle.Hash) []byte {
 	return bundleHash
 }
 
-func databaseKeyForBundleTransaction(bundleHash hornet.Hash, txHash hornet.Hash, isTail bool) []byte {
+func databaseKeyForBundleTransaction(bundleHash aingle.Hash, txHash aingle.Hash, isTail bool) []byte {
 	var isTailByte byte
 	if isTail {
 		isTailByte = BundleTxIsTail
@@ -73,16 +73,16 @@ type BundleTransaction struct {
 	objectstorage.StorableObjectFlags
 
 	// Key
-	BundleHash hornet.Hash
+	BundleHash aingle.Hash
 	IsTail     bool
-	TxHash     hornet.Hash
+	TxHash     aingle.Hash
 }
 
-func (bt *BundleTransaction) GetTxHash() hornet.Hash {
+func (bt *BundleTransaction) GetTxHash() aingle.Hash {
 	return bt.TxHash
 }
 
-func (bt *BundleTransaction) GetBundleHash() hornet.Hash {
+func (bt *BundleTransaction) GetBundleHash() aingle.Hash {
 	return bt.BundleHash
 }
 
@@ -135,7 +135,7 @@ func (c *CachedBundleTransaction) GetBundleTransaction() *BundleTransaction {
 }
 
 // bundleTx +1
-func GetCachedBundleTransactionOrNil(bundleHash hornet.Hash, txHash hornet.Hash, isTail bool) *CachedBundleTransaction {
+func GetCachedBundleTransactionOrNil(bundleHash aingle.Hash, txHash aingle.Hash, isTail bool) *CachedBundleTransaction {
 	cachedBundleTx := bundleTransactionsStorage.Load(databaseKeyForBundleTransaction(bundleHash, txHash, isTail)) // bundleTx +1
 	if !cachedBundleTx.Exists() {
 		cachedBundleTx.Release(true) // bundleTx -1
@@ -145,8 +145,8 @@ func GetCachedBundleTransactionOrNil(bundleHash hornet.Hash, txHash hornet.Hash,
 }
 
 // bundleTx +-0
-func GetBundleTransactionHashes(bundleHash hornet.Hash, forceRelease bool, maxFind ...int) hornet.Hashes {
-	var bundleTransactionHashes hornet.Hashes
+func GetBundleTransactionHashes(bundleHash aingle.Hash, forceRelease bool, maxFind ...int) aingle.Hashes {
+	var bundleTransactionHashes aingle.Hashes
 
 	i := 0
 	bundleTransactionsStorage.ForEachKeyOnly(func(key []byte) bool {
@@ -163,8 +163,8 @@ func GetBundleTransactionHashes(bundleHash hornet.Hash, forceRelease bool, maxFi
 }
 
 // bundleTx +1
-func GetAllBundleTransactionHashes(maxFind ...int) hornet.Hashes {
-	var bundleTransactionHashes hornet.Hashes
+func GetAllBundleTransactionHashes(maxFind ...int) aingle.Hashes {
+	var bundleTransactionHashes aingle.Hashes
 
 	i := 0
 	bundleTransactionsStorage.ForEachKeyOnly(func(key []byte) bool {
@@ -181,8 +181,8 @@ func GetAllBundleTransactionHashes(maxFind ...int) hornet.Hashes {
 }
 
 // bundleTx +1
-func GetBundleTailTransactionHashes(bundleHash hornet.Hash, forceRelease bool, maxFind ...int) hornet.Hashes {
-	var bundleTransactionHashes hornet.Hashes
+func GetBundleTailTransactionHashes(bundleHash aingle.Hash, forceRelease bool, maxFind ...int) aingle.Hashes {
+	var bundleTransactionHashes aingle.Hashes
 
 	i := 0
 	bundleTransactionsStorage.ForEachKeyOnly(func(key []byte) bool {
@@ -199,7 +199,7 @@ func GetBundleTailTransactionHashes(bundleHash hornet.Hash, forceRelease bool, m
 }
 
 // BundleTransactionConsumer consumes the given bundle transaction during looping through all bundle transactions in the persistence layer.
-type BundleTransactionConsumer func(bundleHash hornet.Hash, txHash hornet.Hash, isTail bool) bool
+type BundleTransactionConsumer func(bundleHash aingle.Hash, txHash aingle.Hash, isTail bool) bool
 
 // ForEachBundleTransaction loops over all bundle transactions.
 func ForEachBundleTransaction(consumer BundleTransactionConsumer, skipCache bool) {
@@ -209,12 +209,12 @@ func ForEachBundleTransaction(consumer BundleTransactionConsumer, skipCache bool
 }
 
 // bundleTx +-0
-func ContainsBundleTransaction(bundleHash hornet.Hash, txHash hornet.Hash, isTail bool) bool {
+func ContainsBundleTransaction(bundleHash aingle.Hash, txHash aingle.Hash, isTail bool) bool {
 	return bundleTransactionsStorage.Contains(databaseKeyForBundleTransaction(bundleHash, txHash, isTail))
 }
 
 // bundleTx +1
-func StoreBundleTransaction(bundleHash hornet.Hash, txHash hornet.Hash, isTail bool) *CachedBundleTransaction {
+func StoreBundleTransaction(bundleHash aingle.Hash, txHash aingle.Hash, isTail bool) *CachedBundleTransaction {
 	bundleTx := &BundleTransaction{
 		BundleHash: bundleHash,
 		IsTail:     isTail,
@@ -224,7 +224,7 @@ func StoreBundleTransaction(bundleHash hornet.Hash, txHash hornet.Hash, isTail b
 }
 
 // bundleTx +-0
-func DeleteBundleTransaction(bundleHash hornet.Hash, txHash hornet.Hash, isTail bool) {
+func DeleteBundleTransaction(bundleHash aingle.Hash, txHash aingle.Hash, isTail bool) {
 	bundleTransactionsStorage.Delete(databaseKeyForBundleTransaction(bundleHash, txHash, isTail))
 }
 
@@ -239,8 +239,8 @@ func FlushBundleTransactionsStorage() {
 ////////////////////////////////////////////////////////////////////////////////
 
 // getTailApproversOfSameBundle returns all tailTx hashes of the same bundle that approve this transaction
-func getTailApproversOfSameBundle(bundleHash hornet.Hash, txHash hornet.Hash, forceRelease bool) hornet.Hashes {
-	var tailTxHashes hornet.Hashes
+func getTailApproversOfSameBundle(bundleHash aingle.Hash, txHash aingle.Hash, forceRelease bool) aingle.Hashes {
+	var tailTxHashes aingle.Hashes
 
 	txsToCheck := make(map[string]struct{})
 	txsToCheck[string(txHash)] = struct{}{}
@@ -250,7 +250,7 @@ func getTailApproversOfSameBundle(bundleHash hornet.Hash, txHash hornet.Hash, fo
 		for txHashToCheck := range txsToCheck {
 			delete(txsToCheck, txHashToCheck)
 
-			for _, approverHash := range GetApproverHashes(hornet.Hash(txHashToCheck)) {
+			for _, approverHash := range GetApproverHashes(aingle.Hash(txHashToCheck)) {
 				cachedApproverTxMeta := GetCachedTxMetadataOrNil(approverHash) // meta +1
 				if cachedApproverTxMeta == nil {
 					continue
@@ -280,7 +280,7 @@ func getTailApproversOfSameBundle(bundleHash hornet.Hash, txHash hornet.Hash, fo
 }
 
 // approversFromSameBundleExist returns whether there are other transactions in the same bundle, that approve this transaction
-func approversFromSameBundleExist(bundleHash hornet.Hash, txHash hornet.Hash, forceRelease bool) bool {
+func approversFromSameBundleExist(bundleHash aingle.Hash, txHash aingle.Hash, forceRelease bool) bool {
 
 	for _, approverHash := range GetApproverHashes(txHash) {
 		if ContainsBundleTransaction(bundleHash, approverHash, true) || ContainsBundleTransaction(bundleHash, approverHash, false) {
@@ -294,7 +294,7 @@ func approversFromSameBundleExist(bundleHash hornet.Hash, txHash hornet.Hash, fo
 
 // RemoveTransactionFromBundle removes the transaction if non-tail and not associated to a bundle instance or
 // if tail, it removes all the transactions of the bundle from the storage that are not used in another bundle instance.
-func RemoveTransactionFromBundle(txMeta *hornet.TransactionMetadata) map[string]struct{} {
+func RemoveTransactionFromBundle(txMeta *aingle.TransactionMetadata) map[string]struct{} {
 
 	txsToRemove := make(map[string]struct{})
 

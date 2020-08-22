@@ -6,10 +6,10 @@ import (
 
 	"github.com/iotaledger/hive.go/daemon"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
 )
 
 const (
@@ -25,14 +25,14 @@ var (
 
 // revalidateDatabase tries to revalidate a corrupted database (after an unclean node shutdown/crash)
 //
-// HORNET uses caches for almost all tangle related data.
+// AINGLE uses caches for almost all tangle related data.
 // If the node crashes, it is not guaranteed that all data in the cache was already persisted to the disk.
 // Thats why we flag the database as corrupted.
 //
 // This function tries to restore a clean database state by deleting all existing transactions
 // since last local snapshot, deleting all ledger states and changes, loading valid snapshot ledger state.
 //
-// This way HORNET should be able to re-solidify the existing tangle in the database.
+// This way AINGLE should be able to re-solidify the existing tangle in the database.
 //
 // Object Storages:
 // 		Stored with caching:
@@ -214,7 +214,7 @@ func cleanupLedgerDiffs(info *tangle.SnapshotInfo) error {
 
 	lastStatusTime := time.Now()
 	var ledgerDiffsCounter int64
-	tangle.ForEachLedgerDiffHash(func(msIndex milestone.Index, address hornet.Hash) bool {
+	tangle.ForEachLedgerDiffHash(func(msIndex milestone.Index, address aingle.Hash) bool {
 		ledgerDiffsCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -275,7 +275,7 @@ func cleanupTransactions(info *tangle.SnapshotInfo) error {
 
 	lastStatusTime := time.Now()
 	var txsCounter int64
-	tangle.ForEachTransactionHash(func(txHash hornet.Hash) bool {
+	tangle.ForEachTransactionHash(func(txHash aingle.Hash) bool {
 		txsCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -332,7 +332,7 @@ func cleanupTransactions(info *tangle.SnapshotInfo) error {
 			log.Infof("deleting transactions...%d/%d (%0.2f%%). %v left...", deletionCounter, total, percentage, remaining.Truncate(time.Second))
 		}
 
-		tangle.DeleteTransaction(hornet.Hash(txHash))
+		tangle.DeleteTransaction(aingle.Hash(txHash))
 	}
 
 	log.Infof("deleting transactions...%d/%d (100.00%%) done. took %v", total, total, time.Since(start).Truncate(time.Millisecond))
@@ -349,7 +349,7 @@ func cleanupTransactionMetadata() error {
 
 	lastStatusTime := time.Now()
 	var metadataCounter int64
-	tangle.ForEachTransactionMetadataHash(func(txHash hornet.Hash) bool {
+	tangle.ForEachTransactionMetadataHash(func(txHash aingle.Hash) bool {
 		metadataCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -391,7 +391,7 @@ func cleanupTransactionMetadata() error {
 			log.Infof("deleting transaction metadata...%d/%d (%0.2f%%). %v left...", deletionCounter, total, percentage, remaining.Truncate(time.Second))
 		}
 
-		tangle.DeleteTransactionMetadata(hornet.Hash(txHash))
+		tangle.DeleteTransactionMetadata(aingle.Hash(txHash))
 	}
 
 	log.Infof("deleting transaction metadata...%d/%d (100.00%%) done. took %v", total, total, time.Since(start).Truncate(time.Millisecond))
@@ -408,7 +408,7 @@ func cleanupBundles() error {
 
 	var bundleCounter int64
 	lastStatusTime := time.Now()
-	tangle.ForEachBundleHash(func(tailTxHash hornet.Hash) bool {
+	tangle.ForEachBundleHash(func(tailTxHash aingle.Hash) bool {
 		bundleCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -458,7 +458,7 @@ func cleanupBundles() error {
 			log.Infof("deleting bundles...%d/%d (%0.2f%%). %v left...", deletionCounter, total, percentage, remaining.Truncate(time.Second))
 		}
 
-		tangle.DeleteBundle(hornet.Hash(tailTxHash))
+		tangle.DeleteBundle(aingle.Hash(tailTxHash))
 	}
 
 	log.Infof("deleting bundles...%d/%d (100.00%%) done. took %v", total, total, time.Since(start).Truncate(time.Millisecond))
@@ -470,9 +470,9 @@ func cleanupBundles() error {
 func cleanupBundleTransactions() error {
 
 	type bundleTransaction struct {
-		bundleHash hornet.Hash
+		bundleHash aingle.Hash
 		isTail     bool
-		txHash     hornet.Hash
+		txHash     aingle.Hash
 	}
 
 	start := time.Now()
@@ -481,7 +481,7 @@ func cleanupBundleTransactions() error {
 
 	lastStatusTime := time.Now()
 	var bundleTxsCounter int64
-	tangle.ForEachBundleTransaction(func(bundleHash hornet.Hash, txHash hornet.Hash, isTail bool) bool {
+	tangle.ForEachBundleTransaction(func(bundleHash aingle.Hash, txHash aingle.Hash, isTail bool) bool {
 		bundleTxsCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -535,8 +535,8 @@ func cleanupBundleTransactions() error {
 func cleanupApprovers() error {
 
 	type approver struct {
-		txHash       hornet.Hash
-		approverHash hornet.Hash
+		txHash       aingle.Hash
+		approverHash aingle.Hash
 	}
 
 	start := time.Now()
@@ -545,7 +545,7 @@ func cleanupApprovers() error {
 
 	lastStatusTime := time.Now()
 	var approverCounter int64
-	tangle.ForEachApprover(func(txHash hornet.Hash, approverHash hornet.Hash) bool {
+	tangle.ForEachApprover(func(txHash aingle.Hash, approverHash aingle.Hash) bool {
 		approverCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -604,8 +604,8 @@ func cleanupApprovers() error {
 func cleanupTags() error {
 
 	type tag struct {
-		tag    hornet.Hash
-		txHash hornet.Hash
+		tag    aingle.Hash
+		txHash aingle.Hash
 	}
 
 	start := time.Now()
@@ -614,7 +614,7 @@ func cleanupTags() error {
 
 	lastStatusTime := time.Now()
 	var tagsCounter int64
-	tangle.ForEachTag(func(txTag hornet.Hash, txHash hornet.Hash) bool {
+	tangle.ForEachTag(func(txTag aingle.Hash, txHash aingle.Hash) bool {
 		tagsCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -668,8 +668,8 @@ func cleanupTags() error {
 func cleanupAddresses() error {
 
 	type address struct {
-		address hornet.Hash
-		txHash  hornet.Hash
+		address aingle.Hash
+		txHash  aingle.Hash
 	}
 
 	addressesToDelete := make(map[string]*address)
@@ -678,7 +678,7 @@ func cleanupAddresses() error {
 
 	lastStatusTime := time.Now()
 	var addressesCounter int64
-	tangle.ForEachAddress(func(addressHash hornet.Hash, txHash hornet.Hash, isValue bool) bool {
+	tangle.ForEachAddress(func(addressHash aingle.Hash, txHash aingle.Hash, isValue bool) bool {
 		addressesCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {
@@ -737,7 +737,7 @@ func cleanupUnconfirmedTxs() error {
 
 	lastStatusTime := time.Now()
 	var unconfirmedTxsCounter int64
-	tangle.ForEachUnconfirmedTx(func(msIndex milestone.Index, txHash hornet.Hash) bool {
+	tangle.ForEachUnconfirmedTx(func(msIndex milestone.Index, txHash aingle.Hash) bool {
 		unconfirmedTxsCounter++
 
 		if time.Since(lastStatusTime) >= printStatusInterval {

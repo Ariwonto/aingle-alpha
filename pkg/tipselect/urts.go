@@ -10,19 +10,19 @@ import (
 	"github.com/iotaledger/hive.go/events"
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/dag"
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/pkg/dag"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
 )
 
 // Score defines the score of a tip.
 type Score int
 
 // TipSelectionFunc is a function which performs a tipselection and returns two tips.
-type TipSelectionFunc = func() (hornet.Hashes, error)
+type TipSelectionFunc = func() (aingle.Hashes, error)
 
 // TipSelStats holds the stats for a tipselection run.
 type TipSelStats struct {
@@ -63,7 +63,7 @@ type Tip struct {
 	// Score is the score of the tip.
 	Score Score
 	// Hash is the transaction hash of the tip.
-	Hash hornet.Hash
+	Hash aingle.Hash
 	// TimeFirstApprover is the timestamp the tip was referenced for the first time by another transaction.
 	TimeFirstApprover time.Time
 	// ApproversCount is the amount the tip was referenced by other transactions.
@@ -210,12 +210,12 @@ func (ts *TipSelector) AddTip(bndl *tangle.Bundle) {
 	checkTip := func(tipsMap map[string]*Tip, approveeTip *Tip, retentionRulesTipsLimit int, maxApprovers uint32, maxReferencedTipAgeSeconds time.Duration) bool {
 		// if the amount of known tips is above the limit, remove the tip directly
 		if len(tipsMap) > retentionRulesTipsLimit {
-			return ts.removeTipWithoutLocking(tipsMap, hornet.Hash(approveeTip.Hash))
+			return ts.removeTipWithoutLocking(tipsMap, aingle.Hash(approveeTip.Hash))
 		}
 
 		// check if the maximum amount of approvers for this tip is reached
 		if approveeTip.ApproversCount.Add(1) >= maxApprovers {
-			return ts.removeTipWithoutLocking(tipsMap, hornet.Hash(approveeTip.Hash))
+			return ts.removeTipWithoutLocking(tipsMap, aingle.Hash(approveeTip.Hash))
 		}
 
 		if maxReferencedTipAgeSeconds == time.Duration(0) {
@@ -252,7 +252,7 @@ func (ts *TipSelector) AddTip(bndl *tangle.Bundle) {
 }
 
 // removeTipWithoutLocking removes the given tailTxHash from the tipsMap without acquiring the lock.
-func (ts *TipSelector) removeTipWithoutLocking(tipsMap map[string]*Tip, tailTxHash hornet.Hash) bool {
+func (ts *TipSelector) removeTipWithoutLocking(tipsMap map[string]*Tip, tailTxHash aingle.Hash) bool {
 	if tip, exists := tipsMap[string(tailTxHash)]; exists {
 		delete(tipsMap, string(tailTxHash))
 		ts.Events.TipRemoved.Trigger(tip)
@@ -262,7 +262,7 @@ func (ts *TipSelector) removeTipWithoutLocking(tipsMap map[string]*Tip, tailTxHa
 }
 
 // randomTipWithoutLocking picks a random tip from the pool and checks it's "own" score again without acquiring the lock.
-func (ts *TipSelector) randomTipWithoutLocking(tipsMap map[string]*Tip) (hornet.Hash, error) {
+func (ts *TipSelector) randomTipWithoutLocking(tipsMap map[string]*Tip) (aingle.Hash, error) {
 
 	if len(tipsMap) == 0 {
 		// no semi-/non-lazy tips available
@@ -288,7 +288,7 @@ func (ts *TipSelector) randomTipWithoutLocking(tipsMap map[string]*Tip) (hornet.
 }
 
 // selectTipWithoutLocking selects a tip.
-func (ts *TipSelector) selectTipWithoutLocking(tipsMap map[string]*Tip) (hornet.Hash, error) {
+func (ts *TipSelector) selectTipWithoutLocking(tipsMap map[string]*Tip) (aingle.Hash, error) {
 
 	if !tangle.IsNodeSyncedWithThreshold() {
 		return nil, tangle.ErrNodeNotSynced
@@ -304,8 +304,8 @@ func (ts *TipSelector) selectTipWithoutLocking(tipsMap map[string]*Tip) (hornet.
 }
 
 // SelectTips selects two tips.
-func (ts *TipSelector) selectTips(tipsMap map[string]*Tip) (hornet.Hashes, error) {
-	tips := hornet.Hashes{}
+func (ts *TipSelector) selectTips(tipsMap map[string]*Tip) (aingle.Hashes, error) {
+	tips := aingle.Hashes{}
 
 	ts.tipsLock.Lock()
 	defer ts.tipsLock.Unlock()
@@ -339,12 +339,12 @@ func (ts *TipSelector) selectTips(tipsMap map[string]*Tip) (hornet.Hashes, error
 }
 
 // SelectSemiLazyTips selects two semi-lazy tips.
-func (ts *TipSelector) SelectSemiLazyTips() (hornet.Hashes, error) {
+func (ts *TipSelector) SelectSemiLazyTips() (aingle.Hashes, error) {
 	return ts.selectTips(ts.semiLazyTipsMap)
 }
 
 // SelectNonLazyTips selects two non-lazy tips.
-func (ts *TipSelector) SelectNonLazyTips() (hornet.Hashes, error) {
+func (ts *TipSelector) SelectNonLazyTips() (aingle.Hashes, error) {
 	return ts.selectTips(ts.nonLazyTipsMap)
 }
 
@@ -452,7 +452,7 @@ func (ts *TipSelector) UpdateScores() int {
 }
 
 // calculateScore calculates the tip selection score of this transaction
-func (ts *TipSelector) calculateScore(txHash hornet.Hash, lsmi milestone.Index) Score {
+func (ts *TipSelector) calculateScore(txHash aingle.Hash, lsmi milestone.Index) Score {
 	cachedTxMeta := tangle.GetCachedTxMetadataOrNil(txHash) // meta +1
 	if cachedTxMeta == nil {
 		// we need to return lazy instead of panic here, because the transaction could have been pruned already

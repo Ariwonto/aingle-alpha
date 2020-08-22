@@ -15,14 +15,14 @@ import (
 
 	"github.com/iotaledger/iota.go/address"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/model/coordinator"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/plugins/database"
-	"github.com/gohornet/hornet/plugins/gossip"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/coordinator"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/plugins/database"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
 )
 
 var (
@@ -64,7 +64,7 @@ func configure(plugin *node.Plugin) {
 	}
 
 	tangle.ConfigureMilestones(
-		hornet.HashFromAddressTrytes(config.NodeConfig.GetString(config.CfgCoordinatorAddress)),
+		aingle.HashFromAddressTrytes(config.NodeConfig.GetString(config.CfgCoordinatorAddress)),
 		config.NodeConfig.GetInt(config.CfgCoordinatorSecurityLevel),
 		uint64(config.NodeConfig.GetInt(config.CfgCoordinatorMerkleTreeDepth)),
 		coordinator.MilestoneMerkleTreeHashFuncWithName(config.NodeConfig.GetString(config.CfgCoordinatorMilestoneMerkleTreeHashFunc)),
@@ -79,7 +79,7 @@ func configure(plugin *node.Plugin) {
 func run(plugin *node.Plugin) {
 
 	if tangle.IsDatabaseCorrupted() && !config.NodeConfig.GetBool(config.CfgDatabaseDebug) {
-		log.Warnf("HORNET was not shut down correctly, the database may be corrupted. Starting revalidation...")
+		log.Warnf("AINGLE was not shut down correctly, the database may be corrupted. Starting revalidation...")
 
 		if err := revalidateDatabase(); err != nil {
 			if err == tangle.ErrOperationAborted {

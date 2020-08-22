@@ -8,10 +8,10 @@ import (
 	"github.com/iotaledger/iota.go/consts"
 	"github.com/iotaledger/iota.go/math"
 
-	"github.com/gohornet/hornet/pkg/dag"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/dag"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 var (
@@ -27,7 +27,7 @@ type Confirmation struct {
 	// The index of the milestone that got confirmed.
 	MilestoneIndex milestone.Index
 	// The transaction hash of the tail transaction of the milestone that got confirmed.
-	MilestoneHash hornet.Hash
+	MilestoneHash aingle.Hash
 	// The ledger mutations and referenced transactions of this milestone.
 	Mutations *WhiteFlagMutations
 }
@@ -35,13 +35,13 @@ type Confirmation struct {
 // WhiteFlagMutations contains the ledger mutations and referenced transactions applied to a cone under the "white-flag" approach.
 type WhiteFlagMutations struct {
 	// The tails of bundles which mutate the ledger in the order in which they were applied.
-	TailsIncluded hornet.Hashes
+	TailsIncluded aingle.Hashes
 	// The tails of bundles which were excluded as they were conflicting with the mutations.
-	TailsExcludedConflicting hornet.Hashes
+	TailsExcludedConflicting aingle.Hashes
 	// The tails which were excluded because they were part of a zero or spam value transfer.
-	TailsExcludedZeroValue hornet.Hashes
+	TailsExcludedZeroValue aingle.Hashes
 	// The tails which were referenced by the milestone (should be the sum of TailsIncluded + TailsExcludedConflicting + TailsExcludedZeroValue).
-	TailsReferenced hornet.Hashes
+	TailsReferenced aingle.Hashes
 	// Contains the updated state of the addresses which were mutated by the given confirmation.
 	NewAddressState map[string]int64
 	// Contains the mutations to the state of the addresses for the given confirmation.
@@ -59,12 +59,12 @@ type WhiteFlagMutations struct {
 // of the bundles which are part of the set which mutated the ledger state when applying the white-flag approach.
 // The ledger state must be write locked while this function is getting called in order to ensure consistency.
 // all cachedTxMetas and cachedBundles have to be released outside.
-func ComputeWhiteFlagMutations(cachedTxMetas map[string]*tangle.CachedMetadata, cachedBundles map[string]*tangle.CachedBundle, merkleTreeHashFunc crypto.Hash, trunkHash hornet.Hash, branchHash ...hornet.Hash) (*WhiteFlagMutations, error) {
+func ComputeWhiteFlagMutations(cachedTxMetas map[string]*tangle.CachedMetadata, cachedBundles map[string]*tangle.CachedBundle, merkleTreeHashFunc crypto.Hash, trunkHash aingle.Hash, branchHash ...aingle.Hash) (*WhiteFlagMutations, error) {
 	wfConf := &WhiteFlagMutations{
-		TailsIncluded:            make(hornet.Hashes, 0),
-		TailsExcludedConflicting: make(hornet.Hashes, 0),
-		TailsExcludedZeroValue:   make(hornet.Hashes, 0),
-		TailsReferenced:          make(hornet.Hashes, 0),
+		TailsIncluded:            make(aingle.Hashes, 0),
+		TailsExcludedConflicting: make(aingle.Hashes, 0),
+		TailsExcludedZeroValue:   make(aingle.Hashes, 0),
+		TailsReferenced:          make(aingle.Hashes, 0),
 		NewAddressState:          make(map[string]int64),
 		AddressMutations:         make(map[string]int64),
 	}
@@ -137,7 +137,7 @@ func ComputeWhiteFlagMutations(cachedTxMetas map[string]*tangle.CachedMetadata, 
 			// load state from milestone cone mutation or previous milestone
 			balance, has := wfConf.NewAddressState[addr]
 			if !has {
-				balanceStateFromPreviousMilestone, _, err := tangle.GetBalanceForAddressWithoutLocking(hornet.Hash(addr))
+				balanceStateFromPreviousMilestone, _, err := tangle.GetBalanceForAddressWithoutLocking(aingle.Hash(addr))
 				if err != nil {
 					return fmt.Errorf("%w: unable to retrieve balance of address %s", err, addr)
 				}

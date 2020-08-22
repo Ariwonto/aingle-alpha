@@ -6,16 +6,16 @@ import (
 	"github.com/iotaledger/hive.go/node"
 	"github.com/iotaledger/hive.go/workerpool"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	tanglePackage "github.com/gohornet/hornet/pkg/model/tangle"
-	tanglemodel "github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/pkg/tipselect"
-	"github.com/gohornet/hornet/pkg/whiteflag"
-	coordinatorPlugin "github.com/gohornet/hornet/plugins/coordinator"
-	"github.com/gohornet/hornet/plugins/tangle"
-	"github.com/gohornet/hornet/plugins/urts"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	tanglePackage "github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	tanglemodel "github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/tipselect"
+	"github.com/Ariwonto/aingle-alpha/pkg/whiteflag"
+	coordinatorPlugin "github.com/Ariwonto/aingle-alpha/plugins/coordinator"
+	"github.com/Ariwonto/aingle-alpha/plugins/tangle"
+	"github.com/Ariwonto/aingle-alpha/plugins/urts"
 )
 
 const (
@@ -67,7 +67,7 @@ func configureVisualizer() {
 func runVisualizer() {
 
 	onReceivedNewTransaction := events.NewClosure(func(cachedTx *tanglemodel.CachedTransaction, latestMilestoneIndex milestone.Index, latestSolidMilestoneIndex milestone.Index) {
-		cachedTx.ConsumeTransactionAndMetadata(func(tx *hornet.Transaction, metadata *hornet.TransactionMetadata) { // tx -1
+		cachedTx.ConsumeTransactionAndMetadata(func(tx *aingle.Transaction, metadata *aingle.TransactionMetadata) { // tx -1
 			if !tanglemodel.IsNodeSyncedWithThreshold() {
 				return
 			}
@@ -89,7 +89,7 @@ func runVisualizer() {
 		})
 	})
 
-	onTransactionSolid := events.NewClosure(func(txHash hornet.Hash) {
+	onTransactionSolid := events.NewClosure(func(txHash aingle.Hash) {
 		if !tanglemodel.IsNodeSyncedWithThreshold() {
 			return
 		}
@@ -122,7 +122,7 @@ func runVisualizer() {
 	})
 
 	// show checkpoints as milestones in the coordinator node
-	onIssuedCheckpointTransaction := events.NewClosure(func(checkpointIndex int, tipIndex int, tipsTotal int, txHash hornet.Hash) {
+	onIssuedCheckpointTransaction := events.NewClosure(func(checkpointIndex int, tipIndex int, tipsTotal int, txHash aingle.Hash) {
 		if !tanglemodel.IsNodeSyncedWithThreshold() {
 			return
 		}

@@ -8,9 +8,9 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var (
@@ -58,7 +58,7 @@ type Milestone struct {
 	objectstorage.StorableObjectFlags
 
 	Index milestone.Index
-	Hash  hornet.Hash
+	Hash  aingle.Hash
 }
 
 // ObjectStorage interface
@@ -80,7 +80,7 @@ func (ms *Milestone) ObjectStorageValue() (data []byte) {
 
 func (ms *Milestone) UnmarshalObjectStorageValue(data []byte) (consumedBytes int, err error) {
 
-	ms.Hash = hornet.Hash(data[:49])
+	ms.Hash = aingle.Hash(data[:49])
 	return 49, nil
 }
 

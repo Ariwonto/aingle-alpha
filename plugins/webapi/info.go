@@ -8,13 +8,13 @@ import (
 
 	"github.com/iotaledger/iota.go/consts"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/plugins/cli"
-	"github.com/gohornet/hornet/plugins/gossip"
-	"github.com/gohornet/hornet/plugins/peering"
-	tangleplugin "github.com/gohornet/hornet/plugins/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/plugins/cli"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
+	"github.com/Ariwonto/aingle-alpha/plugins/peering"
+	tangleplugin "github.com/Ariwonto/aingle-alpha/plugins/tangle"
 )
 
 func init() {

@@ -21,7 +21,7 @@ COPY . .
 # Build the binary
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -tags="pow_avx" \
       -ldflags='-w -s -extldflags "-static"' -a \
-       -o /go/bin/hornet
+       -o /go/bin/aingle
 
 ############################
 # Image
@@ -34,7 +34,7 @@ EXPOSE 15600/tcp
 EXPOSE 14626/udp
 
 # Copy assets into distroless image
-COPY --from=build /go/bin/hornet /app/hornet
+COPY --from=build /go/bin/aingle /app/aingle
 COPY ./config.json /app/config.json
 COPY ./config_comnet.json /app/config_comnet.json
 COPY ./config_devnet.json /app/config_devnet.json
@@ -42,12 +42,12 @@ COPY ./peering.json /app/peering.json
 COPY ./profiles.json /app/profiles.json
 COPY ./mqtt_config.json /app/mqtt_config.json
 
-RUN addgroup --gid 39999 hornet \
- && adduser -h /app -s /bin/sh -G hornet -u 39999 -D hornet \
+RUN addgroup --gid 39999 aingle \
+ && adduser -h /app -s /bin/sh -G aingle -u 39999 -D aingle \
  && mkdir -p /app/data \
- && chown hornet:hornet -R /app
+ && chown aingle:aingle -R /app
 
 WORKDIR "/app"
-USER hornet
+USER aingle
 
-ENTRYPOINT ["/app/hornet"]
+ENTRYPOINT ["/app/aingle"]

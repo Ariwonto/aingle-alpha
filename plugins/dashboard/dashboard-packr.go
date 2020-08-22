@@ -5,4 +5,4 @@
 // and any other packr generated files.
 package dashboard
 
-import _ "github.com/gohornet/hornet/plugins/dashboard/packrd"
+import _ "github.com/Ariwonto/aingle-alpha/plugins/dashboard/packrd"

@@ -11,7 +11,7 @@ import (
 	"github.com/iotaledger/hive.go/daemon"
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 var (

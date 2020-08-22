@@ -1,10 +1,10 @@
 package helpers
 
 import (
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol/sting"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/sting"
 )
 
 // SendTransaction sends a transaction message to the given peer.
@@ -27,7 +27,7 @@ func SendHeartbeat(p *peer.Peer, solidMsIndex milestone.Index, pruningMsIndex mi
 }
 
 // SendTransactionRequest sends a transaction request message to the given peer.
-func SendTransactionRequest(p *peer.Peer, requestedHash hornet.Hash) {
+func SendTransactionRequest(p *peer.Peer, requestedHash aingle.Hash) {
 	if !p.Protocol.Supports(sting.FeatureSet) {
 		return
 	}

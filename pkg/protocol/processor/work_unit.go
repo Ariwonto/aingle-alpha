@@ -4,11 +4,11 @@ import (
 	"github.com/iotaledger/hive.go/objectstorage"
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol/bqueue"
-	"github.com/gohornet/hornet/plugins/peering"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/bqueue"
+	"github.com/Ariwonto/aingle-alpha/plugins/peering"
 )
 
 // WorkUnitState defines the state which a WorkUnit is in.
@@ -50,8 +50,8 @@ type WorkUnit struct {
 	// data
 	dataLock        syncutils.RWMutex
 	receivedTxBytes []byte
-	receivedTxHash  hornet.Hash
-	tx              *hornet.Transaction
+	receivedTxHash  aingle.Hash
+	tx              *aingle.Transaction
 	wasStale        bool
 
 	// status
@@ -97,7 +97,7 @@ func (wu *WorkUnit) Is(state WorkUnitState) bool {
 // adds a Request for the given peer to this WorkUnit.
 // requestedTxHashBytes can be nil to flag that this request just reflects a receive from the given
 // peer and has no associated request.
-func (wu *WorkUnit) addReceivedFrom(p *peer.Peer, requestedTxHash hornet.Hash) {
+func (wu *WorkUnit) addReceivedFrom(p *peer.Peer, requestedTxHash aingle.Hash) {
 	wu.receivedFromLock.Lock()
 	defer wu.receivedFromLock.Unlock()
 	wu.receivedFrom = append(wu.receivedFrom, p)

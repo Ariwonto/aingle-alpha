@@ -14,11 +14,11 @@ import (
 	"github.com/iotaledger/hive.go/logger"
 	"github.com/iotaledger/hive.go/node"
 
-	"github.com/gohornet/hornet/pkg/autopeering/services"
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/plugins/peering"
+	"github.com/Ariwonto/aingle-alpha/pkg/autopeering/services"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/plugins/peering"
 )
 
 var (

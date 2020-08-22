@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 type ConfirmedMilestoneStats struct {
@@ -82,7 +82,7 @@ func ConfirmMilestone(cachedTxMetas map[string]*tangle.CachedMetadata, cachedMsB
 	cachedMsTailTx := msBundle.GetTail()
 	defer cachedMsTailTx.Release(true)
 
-	loadTxMeta := func(txHash hornet.Hash) (*tangle.CachedMetadata, error) {
+	loadTxMeta := func(txHash aingle.Hash) (*tangle.CachedMetadata, error) {
 		cachedTxMeta, exists := cachedTxMetas[string(txHash)]
 		if !exists {
 			cachedTxMeta = tangle.GetCachedTxMetadataOrNil(txHash) // meta +1
@@ -94,7 +94,7 @@ func ConfirmMilestone(cachedTxMetas map[string]*tangle.CachedMetadata, cachedMsB
 		return cachedTxMeta, nil
 	}
 
-	loadBundle := func(txHash hornet.Hash) (*tangle.CachedBundle, error) {
+	loadBundle := func(txHash aingle.Hash) (*tangle.CachedBundle, error) {
 		cachedBundle, exists := cachedBundles[string(txHash)]
 		if !exists {
 			cachedBundle = tangle.GetCachedBundleOrNil(txHash) // bundle +1
@@ -107,7 +107,7 @@ func ConfirmMilestone(cachedTxMetas map[string]*tangle.CachedMetadata, cachedMsB
 	}
 
 	// load the bundle for the given tail tx and iterate over each tx in the bundle
-	forEachBundleTxMetaWithTailTxHash := func(txHash hornet.Hash, do func(tx *tangle.CachedMetadata)) error {
+	forEachBundleTxMetaWithTailTxHash := func(txHash aingle.Hash, do func(tx *tangle.CachedMetadata)) error {
 		bundle, err := loadBundle(txHash)
 		if err != nil {
 			return err

@@ -10,8 +10,8 @@ import (
 
 	"github.com/iotaledger/hive.go/kvstore"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 var (
@@ -52,7 +52,7 @@ func readSnapshotInfo() (*SnapshotInfo, error) {
 	return info, nil
 }
 
-func storeSolidEntryPoints(points *hornet.SolidEntryPoints) error {
+func storeSolidEntryPoints(points *aingle.SolidEntryPoints) error {
 	if points.IsModified() {
 
 		if err := snapshotStore.Set([]byte("solidEntryPoints"), points.GetBytes()); err != nil {
@@ -65,7 +65,7 @@ func storeSolidEntryPoints(points *hornet.SolidEntryPoints) error {
 	return nil
 }
 
-func readSolidEntryPoints() (*hornet.SolidEntryPoints, error) {
+func readSolidEntryPoints() (*aingle.SolidEntryPoints, error) {
 	value, err := snapshotStore.Get([]byte("solidEntryPoints"))
 	if err != nil {
 		if err != kvstore.ErrKeyNotFound {
@@ -74,7 +74,7 @@ func readSolidEntryPoints() (*hornet.SolidEntryPoints, error) {
 		return nil, nil
 	}
 
-	points, err := hornet.SolidEntryPointsFromBytes(value)
+	points, err := aingle.SolidEntryPointsFromBytes(value)
 	if err != nil {
 		return nil, errors.Wrap(NewDatabaseError(err), "failed to convert solid entry points")
 	}
@@ -108,7 +108,7 @@ func StoreSnapshotBalancesInDatabase(balances map[string]uint64, index milestone
 
 	for address, balance := range balances {
 		if balance != 0 {
-			if err := batch.Set(hornet.Hash(address), bytesFromBalance(balance)); err != nil {
+			if err := batch.Set(aingle.Hash(address), bytesFromBalance(balance)); err != nil {
 				return errors.Wrap(NewDatabaseError(err), "failed to set the balance")
 			}
 		}

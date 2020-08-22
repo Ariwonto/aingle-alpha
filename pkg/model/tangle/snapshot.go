@@ -10,8 +10,8 @@ import (
 	"github.com/iotaledger/hive.go/bitmask"
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 const (
@@ -27,8 +27,8 @@ var (
 )
 
 type SnapshotInfo struct {
-	CoordinatorAddress hornet.Hash
-	Hash               hornet.Hash
+	CoordinatorAddress aingle.Hash
+	Hash               aingle.Hash
 	SnapshotIndex      milestone.Index
 	EntryPointIndex    milestone.Index
 	PruningIndex       milestone.Index
@@ -59,8 +59,8 @@ func SnapshotInfoFromBytes(bytes []byte) (*SnapshotInfo, error) {
 		return nil, errors.Wrapf(ErrParseSnapshotInfoFailed, "Invalid length %d != 119", len(bytes))
 	}
 
-	cooAddr := hornet.Hash(bytes[:49])
-	hash := hornet.Hash(bytes[49:98])
+	cooAddr := aingle.Hash(bytes[:49])
+	hash := aingle.Hash(bytes[49:98])
 	snapshotIndex := milestone.Index(binary.LittleEndian.Uint32(bytes[98:102]))
 	entryPointIndex := milestone.Index(binary.LittleEndian.Uint32(bytes[102:106]))
 	pruningIndex := milestone.Index(binary.LittleEndian.Uint32(bytes[106:110]))
@@ -115,7 +115,7 @@ func (i *SnapshotInfo) GetBytes() []byte {
 	return bytes
 }
 
-func SetSnapshotMilestone(coordinatorAddress hornet.Hash, milestoneHash hornet.Hash, snapshotIndex milestone.Index, entryPointIndex milestone.Index, pruningIndex milestone.Index, timestamp int64, spentAddressesEnabled bool) {
+func SetSnapshotMilestone(coordinatorAddress aingle.Hash, milestoneHash aingle.Hash, snapshotIndex milestone.Index, entryPointIndex milestone.Index, pruningIndex milestone.Index, timestamp int64, spentAddressesEnabled bool) {
 
 	println(fmt.Sprintf(`SnapshotInfo:
 	CooAddr: %v

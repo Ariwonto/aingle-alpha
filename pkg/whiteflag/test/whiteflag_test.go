@@ -26,15 +26,15 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/kvstore/mapdb"
 
-	"github.com/gohornet/hornet/pkg/compressed"
-	"github.com/gohornet/hornet/pkg/model/coordinator"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	hornet_pow "github.com/gohornet/hornet/pkg/pow"
-	"github.com/gohornet/hornet/pkg/profile"
-	"github.com/gohornet/hornet/pkg/utils"
-	"github.com/gohornet/hornet/pkg/whiteflag"
+	"github.com/Ariwonto/aingle-alpha/pkg/compressed"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/coordinator"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	hornet_pow "github.com/Ariwonto/aingle-alpha/pkg/pow"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/pkg/whiteflag"
 )
 
 const (
@@ -54,8 +54,8 @@ const (
 
 var (
 	coo               *coordinator.Coordinator
-	nextTip           = hornet.NullHashBytes
-	lastMilestoneHash = hornet.NullHashBytes
+	nextTip           = aingle.NullHashBytes
+	lastMilestoneHash = aingle.NullHashBytes
 
 	// This is just used to clean up at the end of a test
 	cachedBundles tangle.CachedBundles
@@ -82,7 +82,7 @@ func storeTransaction(t *testing.T, tx *transaction.Transaction) *tangle.CachedT
 	txTrits, err := transaction.TransactionToTrits(tx)
 	require.NoError(t, err)
 	txBytesTruncated := compressed.TruncateTx(trinary.MustTritsToBytes(txTrits))
-	hornetTx := hornet.NewTransactionFromTx(tx, txBytesTruncated)
+	hornetTx := aingle.NewTransactionFromTx(tx, txBytesTruncated)
 	latestMilestoneIndex := tangle.GetLatestMilestoneIndex()
 	//fmt.Printf("Store tx: %s, isTail: %v\n", hornetTx.GetTxHash().Trytes(), hornetTx.IsTail())
 	cachedTx, alreadyAdded := tangle.AddTransactionToStorage(hornetTx, latestMilestoneIndex, false, true, true)
@@ -93,7 +93,7 @@ func storeTransaction(t *testing.T, tx *transaction.Transaction) *tangle.CachedT
 
 func storeBundle(t *testing.T, bndl bundle.Bundle, expectMilestone bool) *tangle.CachedBundle {
 
-	var hashes hornet.Hashes
+	var hashes aingle.Hashes
 	// Store all tx in db
 	for i := 0; i < len(bndl); i++ {
 		cachedTx := storeTransaction(t, &bndl[i])
@@ -102,7 +102,7 @@ func storeBundle(t *testing.T, bndl bundle.Bundle, expectMilestone bool) *tangle
 		cachedTx.Release()
 	}
 
-	var tailTx hornet.Hash
+	var tailTx aingle.Hash
 	// Solidify tx if not a milestone
 	for _, hash := range hashes {
 		cachedTxMeta := tangle.GetCachedTxMetadataOrNil(hash)
@@ -245,7 +245,7 @@ func sendFrom(t *testing.T, tag trinary.Trytes, fromSeed trinary.Trytes, fromInd
 	return trytes
 }
 
-func attachTo(t *testing.T, trunk hornet.Hash, branch hornet.Hash, trytes []trinary.Trytes) bundle.Bundle {
+func attachTo(t *testing.T, trunk aingle.Hash, branch aingle.Hash, trytes []trinary.Trytes) bundle.Bundle {
 
 	_, powFunc := pow.GetFastestProofOfWorkImpl()
 	powed, err := pow.DoPoW(trunk.Trytes(), branch.Trytes(), trytes, mwm, powFunc)
@@ -287,10 +287,10 @@ func configureCoordinator(t *testing.T) *coordinator.Coordinator {
 	coo.InitState(true, 0)
 
 	// Save snapshot info
-	tangle.SetSnapshotMilestone(hornet.HashFromAddressTrytes(cooAddress), hornet.NullHashBytes, 0, 0, 0, time.Now().Unix(), false)
+	tangle.SetSnapshotMilestone(aingle.HashFromAddressTrytes(cooAddress), aingle.NullHashBytes, 0, 0, 0, time.Now().Unix(), false)
 
 	// Configure Milestones
-	tangle.ConfigureMilestones(hornet.HashFromAddressTrytes(cooAddress), int(secLevel), merkleTreeDepth, merkleHashFunc)
+	tangle.ConfigureMilestones(aingle.HashFromAddressTrytes(cooAddress), int(secLevel), merkleTreeDepth, merkleHashFunc)
 
 	milestoneHash, err := coo.Bootstrap()
 	require.NoError(t, err)
@@ -332,7 +332,7 @@ func verifyLMI(t *testing.T, index milestone.Index) {
 	require.Equal(t, index, lmi)
 }
 
-func issueAndConfirmMilestoneOnTip(t *testing.T, tip hornet.Hash, printTangle bool) (*tangle.CachedBundle, *whiteflag.ConfirmedMilestoneStats) {
+func issueAndConfirmMilestoneOnTip(t *testing.T, tip aingle.Hash, printTangle bool) (*tangle.CachedBundle, *whiteflag.ConfirmedMilestoneStats) {
 
 	nextTip = tip
 
@@ -384,10 +384,10 @@ func issueAndConfirmMilestoneOnTip(t *testing.T, tip hornet.Hash, printTangle bo
 	return ms, conf
 }
 
-func generateAddress(t *testing.T, seed trinary.Trytes, index uint64) hornet.Hash {
+func generateAddress(t *testing.T, seed trinary.Trytes, index uint64) aingle.Hash {
 	seedAddress, err := address.GenerateAddress(seed, index, consts.SecurityLevelMedium, false)
 	require.NoError(t, err)
-	return hornet.HashFromAddressTrytes(seedAddress)
+	return aingle.HashFromAddressTrytes(seedAddress)
 }
 
 func assertAddressBalance(t *testing.T, seed trinary.Trytes, index uint64, balance uint64) {
@@ -411,7 +411,7 @@ func setupCoordinatorAndIssueInitialMilestones(t *testing.T, initialBalances map
 		sum += value
 	}
 	// Move remaining supply to 999..999
-	balances[string(hornet.NullHashBytes)] = consts.TotalSupply - sum
+	balances[string(aingle.NullHashBytes)] = consts.TotalSupply - sum
 
 	store := mapdb.NewMapDB()
 	setupTestEnvironment(t, store)
@@ -438,7 +438,7 @@ func setupCoordinatorAndIssueInitialMilestones(t *testing.T, initialBalances map
 	var milestones tangle.CachedBundles
 	for i := 1; i <= numberOfMilestones; i++ {
 		// 2nd milestone
-		ms, conf := issueAndConfirmMilestoneOnTip(t, hornet.NullHashBytes, true)
+		ms, conf := issueAndConfirmMilestoneOnTip(t, aingle.NullHashBytes, true)
 		require.Equal(t, 3, conf.TxsConfirmed) // 3 for milestone
 		require.Equal(t, 3, conf.TxsZeroValue) // 3 for milestone
 		require.Equal(t, 0, conf.TxsValue)
@@ -449,7 +449,7 @@ func setupCoordinatorAndIssueInitialMilestones(t *testing.T, initialBalances map
 	return milestones
 }
 
-func shortenedHash(hash hornet.Hash) string {
+func shortenedHash(hash aingle.Hash) string {
 	trytes := hash.Trytes()
 	return trytes[0:4] + "..." + trytes[77:81]
 }
@@ -471,7 +471,7 @@ func shortened(bundle *tangle.CachedBundle) string {
 
 func generateDotFileFromTangle(t *testing.T, conf *whiteflag.Confirmation) string {
 
-	indexOf := func(hash hornet.Hash) int {
+	indexOf := func(hash aingle.Hash) int {
 		if conf == nil {
 			return -1
 		}

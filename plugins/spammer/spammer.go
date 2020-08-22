@@ -12,13 +12,13 @@ import (
 
 	"github.com/iotaledger/hive.go/batchhasher"
 
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/utils"
-	"github.com/gohornet/hornet/plugins/gossip"
-	"github.com/gohornet/hornet/plugins/peering"
-	"github.com/gohornet/hornet/plugins/pow"
-	"github.com/gohornet/hornet/plugins/urts"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
+	"github.com/Ariwonto/aingle-alpha/plugins/peering"
+	"github.com/Ariwonto/aingle-alpha/plugins/pow"
+	"github.com/Ariwonto/aingle-alpha/plugins/urts"
 
 	"go.uber.org/atomic"
 )

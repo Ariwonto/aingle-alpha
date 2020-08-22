@@ -6,8 +6,8 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var approversStorage *objectstorage.ObjectStorage
@@ -24,12 +24,12 @@ func (cachedApprovers CachedAppprovers) Release(force ...bool) {
 	}
 }
 
-func (c *CachedApprover) GetApprover() *hornet.Approver {
-	return c.Get().(*hornet.Approver)
+func (c *CachedApprover) GetApprover() *aingle.Approver {
+	return c.Get().(*aingle.Approver)
 }
 
 func approversFactory(key []byte) (objectstorage.StorableObject, int, error) {
-	approver := hornet.NewApprover(key[:49], key[49:98])
+	approver := aingle.NewApprover(key[:49], key[49:98])
 	return approver, 98, nil
 }
 
@@ -56,8 +56,8 @@ func configureApproversStorage(store kvstore.KVStore, opts profile.CacheOpts) {
 }
 
 // approvers +-0
-func GetApproverHashes(txHash hornet.Hash, maxFind ...int) hornet.Hashes {
-	var approverHashes hornet.Hashes
+func GetApproverHashes(txHash aingle.Hash, maxFind ...int) aingle.Hashes {
+	var approverHashes aingle.Hashes
 
 	i := 0
 	approversStorage.ForEachKeyOnly(func(key []byte) bool {
@@ -74,7 +74,7 @@ func GetApproverHashes(txHash hornet.Hash, maxFind ...int) hornet.Hashes {
 }
 
 // ApproverConsumer consumes the given approver during looping through all approvers in the persistence layer.
-type ApproverConsumer func(txHash hornet.Hash, approverHash hornet.Hash) bool
+type ApproverConsumer func(txHash aingle.Hash, approverHash aingle.Hash) bool
 
 // ForEachApprover loops over all approvers.
 func ForEachApprover(consumer ApproverConsumer, skipCache bool) {
@@ -84,19 +84,19 @@ func ForEachApprover(consumer ApproverConsumer, skipCache bool) {
 }
 
 // approvers +1
-func StoreApprover(txHash hornet.Hash, approverHash hornet.Hash) *CachedApprover {
-	approver := hornet.NewApprover(txHash, approverHash)
+func StoreApprover(txHash aingle.Hash, approverHash aingle.Hash) *CachedApprover {
+	approver := aingle.NewApprover(txHash, approverHash)
 	return &CachedApprover{CachedObject: approversStorage.Store(approver)}
 }
 
 // approvers +-0
-func DeleteApprover(txHash hornet.Hash, approverHash hornet.Hash) {
-	approver := hornet.NewApprover(txHash, approverHash)
+func DeleteApprover(txHash aingle.Hash, approverHash aingle.Hash) {
+	approver := aingle.NewApprover(txHash, approverHash)
 	approversStorage.Delete(approver.ObjectStorageKey())
 }
 
 // approvers +-0
-func DeleteApprovers(txHash hornet.Hash) {
+func DeleteApprovers(txHash aingle.Hash) {
 
 	var keysToDelete [][]byte
 

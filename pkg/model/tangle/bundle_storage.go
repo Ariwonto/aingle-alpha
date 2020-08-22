@@ -10,17 +10,17 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var (
 	bundleStorage *objectstorage.ObjectStorage
 )
 
-func databaseKeyForBundle(tailTxHash hornet.Hash) []byte {
+func databaseKeyForBundle(tailTxHash aingle.Hash) []byte {
 	return tailTxHash
 }
 
@@ -87,12 +87,12 @@ func (bundle *Bundle) ObjectStorageValue() (data []byte) {
 
 	offset := 123
 	for txHash := range bundle.txs {
-		copy(value[offset:offset+49], hornet.Hash(txHash))
+		copy(value[offset:offset+49], aingle.Hash(txHash))
 		offset += 49
 	}
 
 	for addr, change := range bundle.ledgerChanges {
-		copy(value[offset:offset+49], hornet.Hash(addr))
+		copy(value[offset:offset+49], aingle.Hash(addr))
 		offset += 49
 		binary.LittleEndian.PutUint64(value[offset:], uint64(change))
 		offset += 8
@@ -179,7 +179,7 @@ func (c *CachedBundle) GetBundle() *Bundle {
 }
 
 // bundle +1
-func GetCachedBundleOrNil(tailTxHash hornet.Hash) *CachedBundle {
+func GetCachedBundleOrNil(tailTxHash aingle.Hash) *CachedBundle {
 	cachedBundle := bundleStorage.Load(databaseKeyForBundle(tailTxHash)) // bundle +1
 	if !cachedBundle.Exists() {
 		cachedBundle.Release(true) // bundle -1
@@ -189,7 +189,7 @@ func GetCachedBundleOrNil(tailTxHash hornet.Hash) *CachedBundle {
 }
 
 // GetStoredBundleOrNil returns a bundle object without accessing the cache layer.
-func GetStoredBundleOrNil(tailTxHash hornet.Hash) *Bundle {
+func GetStoredBundleOrNil(tailTxHash aingle.Hash) *Bundle {
 	storedBundle := bundleStorage.LoadObjectFromStore(tailTxHash)
 	if storedBundle == nil {
 		return nil
@@ -198,7 +198,7 @@ func GetStoredBundleOrNil(tailTxHash hornet.Hash) *Bundle {
 }
 
 // BundleHashConsumer consumes the given tailTxHash during looping through all bundles in the persistence layer.
-type BundleHashConsumer func(txHash hornet.Hash) bool
+type BundleHashConsumer func(txHash aingle.Hash) bool
 
 // ForEachBundleHash loops over all bundle hashes.
 func ForEachBundleHash(consumer BundleHashConsumer, skipCache bool) {
@@ -208,12 +208,12 @@ func ForEachBundleHash(consumer BundleHashConsumer, skipCache bool) {
 }
 
 // bundle +-0
-func ContainsBundle(tailTxHash hornet.Hash) bool {
+func ContainsBundle(tailTxHash aingle.Hash) bool {
 	return bundleStorage.Contains(databaseKeyForBundle(tailTxHash))
 }
 
 // bundle +-0
-func DeleteBundle(tailTxHash hornet.Hash) {
+func DeleteBundle(tailTxHash aingle.Hash) {
 	bundleStorage.Delete(databaseKeyForBundle(tailTxHash))
 }
 
@@ -229,7 +229,7 @@ func FlushBundleStorage() {
 
 // GetBundles returns all existing bundle instances for that bundle hash
 // bundle +1
-func GetBundles(bundleHash hornet.Hash, forceRelease bool, maxFind ...int) CachedBundles {
+func GetBundles(bundleHash aingle.Hash, forceRelease bool, maxFind ...int) CachedBundles {
 
 	var cachedBndls CachedBundles
 
@@ -255,7 +255,7 @@ func GetBundles(bundleHash hornet.Hash, forceRelease bool, maxFind ...int) Cache
 // which attach to the same underlying bundle transaction. For example it is possible to reattach
 // a bundle's tail transaction directly "on top" of the origin one.
 // bundle +1
-func GetBundlesOfTransactionOrNil(txHash hornet.Hash, forceRelease bool) CachedBundles {
+func GetBundlesOfTransactionOrNil(txHash aingle.Hash, forceRelease bool) CachedBundles {
 
 	var cachedBndls CachedBundles
 
@@ -292,7 +292,7 @@ func GetBundlesOfTransactionOrNil(txHash hornet.Hash, forceRelease bool) CachedB
 ////////////////////////////////////////////////////////////////////////////////
 
 // tx +1
-func AddTransactionToStorage(hornetTx *hornet.Transaction, latestMilestoneIndex milestone.Index, requested bool, forceRelease bool, reapply bool) (cachedTx *CachedTransaction, alreadyAdded bool) {
+func AddTransactionToStorage(hornetTx *aingle.Transaction, latestMilestoneIndex milestone.Index, requested bool, forceRelease bool, reapply bool) (cachedTx *CachedTransaction, alreadyAdded bool) {
 
 	cachedTx, isNew := StoreTransactionIfAbsent(hornetTx) // tx +1
 	if !isNew && !reapply {

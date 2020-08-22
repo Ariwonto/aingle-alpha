@@ -3,8 +3,8 @@ package webapi
 import (
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
 )
 
 //////////////////// addNeighbors /////////////////////////////////

@@ -12,8 +12,8 @@ import (
 
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 const (
@@ -28,7 +28,7 @@ var (
 	isNodeSynced          bool
 	isNodeSyncedThreshold bool
 
-	coordinatorAddress                 hornet.Hash
+	coordinatorAddress                 aingle.Hash
 	coordinatorSecurityLevel           int
 	coordinatorMerkleTreeDepth         uint64
 	coordinatorMilestoneMerkleHashFunc crypto.Hash
@@ -37,7 +37,7 @@ var (
 	ErrInvalidMilestone = errors.New("invalid milestone")
 )
 
-func ConfigureMilestones(cooAddr hornet.Hash, cooSecLvl int, cooMerkleTreeDepth uint64, cooMilestoneMerkleHashFunc crypto.Hash) {
+func ConfigureMilestones(cooAddr aingle.Hash, cooSecLvl int, cooMerkleTreeDepth uint64, cooMilestoneMerkleHashFunc crypto.Hash) {
 	coordinatorAddress = cooAddr
 	coordinatorSecurityLevel = cooSecLvl
 	coordinatorMerkleTreeDepth = cooMerkleTreeDepth
@@ -305,7 +305,7 @@ func IsMaybeMilestone(cachedTx *CachedTransaction) bool {
 
 // Checks if the the tx could be part of a milestone.
 func IsMaybeMilestoneTx(cachedTx *CachedTransaction) bool {
-	value := (cachedTx.GetTransaction().Tx.Value == 0) && (bytes.Equal(cachedTx.GetTransaction().GetAddress(), coordinatorAddress) || bytes.Equal(cachedTx.GetTransaction().GetAddress(), hornet.NullHashBytes))
+	value := (cachedTx.GetTransaction().Tx.Value == 0) && (bytes.Equal(cachedTx.GetTransaction().GetAddress(), coordinatorAddress) || bytes.Equal(cachedTx.GetTransaction().GetAddress(), aingle.NullHashBytes))
 	cachedTx.Release(true) // tx -1
 	return value
 }

@@ -5,9 +5,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/gohornet/hornet/pkg/protocol"
-	"github.com/gohornet/hornet/pkg/protocol/handshake"
-	"github.com/gohornet/hornet/pkg/protocol/sting"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/handshake"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/sting"
 	"github.com/iotaledger/hive.go/events"
 	"github.com/stretchr/testify/assert"
 )

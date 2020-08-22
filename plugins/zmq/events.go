@@ -8,9 +8,9 @@ import (
 	"github.com/iotaledger/iota.go/transaction"
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 
 func onNewTx(cachedTx *tangle.CachedTransaction) {
 
-	cachedTx.ConsumeTransaction(func(tx *hornet.Transaction) {
+	cachedTx.ConsumeTransaction(func(tx *aingle.Transaction) {
 		// tx topic
 		err := publishTx(tx.Tx)
 		if err != nil {
@@ -37,7 +37,7 @@ func onNewTx(cachedTx *tangle.CachedTransaction) {
 
 func onConfirmedTx(cachedMeta *tangle.CachedMetadata, msIndex milestone.Index, _ int64) {
 
-	cachedMeta.ConsumeMetadata(func(metadata *hornet.TransactionMetadata) {
+	cachedMeta.ConsumeMetadata(func(metadata *aingle.TransactionMetadata) {
 
 		cachedTx := tangle.GetCachedTransactionOrNil(metadata.GetTxHash())
 		if cachedTx == nil {
@@ -45,7 +45,7 @@ func onConfirmedTx(cachedMeta *tangle.CachedMetadata, msIndex milestone.Index, _
 			return
 		}
 
-		cachedTx.ConsumeTransaction(func(tx *hornet.Transaction) {
+		cachedTx.ConsumeTransaction(func(tx *aingle.Transaction) {
 			if err := publishConfTx(tx.Tx, msIndex); err != nil {
 				log.Warn(err.Error())
 			}

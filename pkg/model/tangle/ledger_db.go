@@ -10,8 +10,8 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/iota.go/consts"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 const (
@@ -53,11 +53,11 @@ func configureLedgerStore(store kvstore.KVStore) {
 	}
 }
 
-func databaseKeyForAddress(address hornet.Hash) []byte {
+func databaseKeyForAddress(address aingle.Hash) []byte {
 	return address[:49]
 }
 
-func databaseKeyForLedgerDiffAndAddress(milestoneIndex milestone.Index, address hornet.Hash) []byte {
+func databaseKeyForLedgerDiffAndAddress(milestoneIndex milestone.Index, address aingle.Hash) []byte {
 	return append(databaseKeyForMilestoneIndex(milestoneIndex), address[:49]...)
 }
 
@@ -101,7 +101,7 @@ func readLedgerMilestoneIndexFromDatabase() error {
 	return nil
 }
 
-func GetBalanceForAddressWithoutLocking(address hornet.Hash) (uint64, milestone.Index, error) {
+func GetBalanceForAddressWithoutLocking(address aingle.Hash) (uint64, milestone.Index, error) {
 
 	value, err := ledgerBalanceStore.Get(databaseKeyForAddress(address))
 	if err != nil {
@@ -114,7 +114,7 @@ func GetBalanceForAddressWithoutLocking(address hornet.Hash) (uint64, milestone.
 	return balanceFromBytes(value), ledgerMilestoneIndex, err
 }
 
-func GetBalanceForAddress(address hornet.Hash) (uint64, milestone.Index, error) {
+func GetBalanceForAddress(address aingle.Hash) (uint64, milestone.Index, error) {
 
 	ReadLockLedger()
 	defer ReadUnlockLedger()
@@ -176,7 +176,7 @@ func GetLedgerDiffForMilestoneWithoutLocking(index milestone.Index, abortSignal 
 }
 
 // LedgerDiffHashConsumer consumes the given ledger diff addresses during looping through all ledger diffs in the persistence layer.
-type LedgerDiffHashConsumer func(msIndex milestone.Index, address hornet.Hash) bool
+type LedgerDiffHashConsumer func(msIndex milestone.Index, address aingle.Hash) bool
 
 // ForEachLedgerDiffHash loops over all ledger diffs.
 func ForEachLedgerDiffHash(consumer LedgerDiffHashConsumer, skipCache bool) {
@@ -240,7 +240,7 @@ func GetLedgerStateForMilestoneWithoutLocking(targetIndex milestone.Index, abort
 			newBalance := int64(balances[address]) - change
 
 			if newBalance < 0 {
-				return nil, 0, fmt.Errorf("Ledger diff for milestone %d creates negative balance for address %s: current %d, diff %d", milestoneIndex, hornet.Hash(address).Trytes(), balances[address], change)
+				return nil, 0, fmt.Errorf("Ledger diff for milestone %d creates negative balance for address %s: current %d, diff %d", milestoneIndex, aingle.Hash(address).Trytes(), balances[address], change)
 			} else if newBalance == 0 {
 				delete(balances, address)
 			} else {
@@ -270,7 +270,7 @@ func ApplyLedgerDiffWithoutLocking(diff map[string]int64, index milestone.Index)
 
 	for address, change := range diff {
 
-		balance, _, err := GetBalanceForAddressWithoutLocking(hornet.Hash(address))
+		balance, _, err := GetBalanceForAddressWithoutLocking(aingle.Hash(address))
 		if err != nil {
 			panic(fmt.Sprintf("GetBalanceForAddressWithoutLocking() returned error for address %s: %v", address, err))
 		}
@@ -278,17 +278,17 @@ func ApplyLedgerDiffWithoutLocking(diff map[string]int64, index milestone.Index)
 		newBalance := int64(balance) + change
 
 		if newBalance < 0 {
-			panic(fmt.Sprintf("Ledger diff for milestone %d creates negative balance for address %s: current %d, diff %d", index, hornet.Hash(address).Trytes(), balance, change))
+			panic(fmt.Sprintf("Ledger diff for milestone %d creates negative balance for address %s: current %d, diff %d", index, aingle.Hash(address).Trytes(), balance, change))
 		} else if newBalance > 0 {
 			// Save balance
-			balanceBatch.Set(databaseKeyForAddress(hornet.Hash(address)), bytesFromBalance(uint64(newBalance)))
+			balanceBatch.Set(databaseKeyForAddress(aingle.Hash(address)), bytesFromBalance(uint64(newBalance)))
 		} else {
 			// Balance is zero, so we can remove this address from the ledger
-			balanceBatch.Delete(databaseKeyForAddress(hornet.Hash(address)))
+			balanceBatch.Delete(databaseKeyForAddress(aingle.Hash(address)))
 		}
 
 		//Save diff
-		diffBatch.Set(databaseKeyForLedgerDiffAndAddress(index, hornet.Hash(address)), bytesFromDiff(change))
+		diffBatch.Set(databaseKeyForLedgerDiffAndAddress(index, aingle.Hash(address)), bytesFromDiff(change))
 
 		diffSum += change
 	}
@@ -327,9 +327,9 @@ func StoreLedgerBalancesInDatabase(balances map[string]uint64, index milestone.I
 
 	for address, balance := range balances {
 		if balance == 0 {
-			balanceBatch.Delete(databaseKeyForAddress(hornet.Hash(address)))
+			balanceBatch.Delete(databaseKeyForAddress(aingle.Hash(address)))
 		} else {
-			balanceBatch.Set(databaseKeyForAddress(hornet.Hash(address)), bytesFromBalance(balance))
+			balanceBatch.Set(databaseKeyForAddress(aingle.Hash(address)), bytesFromBalance(balance))
 		}
 	}
 

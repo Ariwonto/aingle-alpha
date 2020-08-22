@@ -6,8 +6,8 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var tagsStorage *objectstorage.ObjectStorage
@@ -25,12 +25,12 @@ func (cachedTags CachedTags) Release(force ...bool) {
 	}
 }
 
-func (c *CachedTag) GetTag() *hornet.Tag {
-	return c.Get().(*hornet.Tag)
+func (c *CachedTag) GetTag() *aingle.Tag {
+	return c.Get().(*aingle.Tag)
 }
 
 func tagsFactory(key []byte) (objectstorage.StorableObject, int, error) {
-	tag := hornet.NewTag(key[:17], key[17:66])
+	tag := aingle.NewTag(key[:17], key[17:66])
 	return tag, 66, nil
 }
 
@@ -57,8 +57,8 @@ func configureTagsStorage(store kvstore.KVStore, opts profile.CacheOpts) {
 }
 
 // tag +-0
-func GetTagHashes(txTag hornet.Hash, forceRelease bool, maxFind ...int) hornet.Hashes {
-	var tagHashes hornet.Hashes
+func GetTagHashes(txTag aingle.Hash, forceRelease bool, maxFind ...int) aingle.Hashes {
+	var tagHashes aingle.Hashes
 
 	i := 0
 	tagsStorage.ForEachKeyOnly(func(key []byte) bool {
@@ -67,7 +67,7 @@ func GetTagHashes(txTag hornet.Hash, forceRelease bool, maxFind ...int) hornet.H
 			return false
 		}
 
-		tagHashes = append(tagHashes, hornet.Hash(key[17:66]))
+		tagHashes = append(tagHashes, aingle.Hash(key[17:66]))
 		return true
 	}, false, txTag)
 
@@ -75,7 +75,7 @@ func GetTagHashes(txTag hornet.Hash, forceRelease bool, maxFind ...int) hornet.H
 }
 
 // TagConsumer consumes the given tag during looping through all tags in the persistence layer.
-type TagConsumer func(txTag hornet.Hash, txHash hornet.Hash) bool
+type TagConsumer func(txTag aingle.Hash, txHash aingle.Hash) bool
 
 // ForEachTag loops over all tags.
 func ForEachTag(consumer TagConsumer, skipCache bool) {
@@ -85,13 +85,13 @@ func ForEachTag(consumer TagConsumer, skipCache bool) {
 }
 
 // tag +1
-func StoreTag(txTag hornet.Hash, txHash hornet.Hash) *CachedTag {
-	tag := hornet.NewTag(txTag[:17], txHash[:49])
+func StoreTag(txTag aingle.Hash, txHash aingle.Hash) *CachedTag {
+	tag := aingle.NewTag(txTag[:17], txHash[:49])
 	return &CachedTag{CachedObject: tagsStorage.Store(tag)}
 }
 
 // tag +-0
-func DeleteTag(txTag hornet.Hash, txHash hornet.Hash) {
+func DeleteTag(txTag aingle.Hash, txHash aingle.Hash) {
 	tagsStorage.Delete(append(txTag[:17], txHash[:49]...))
 }
 

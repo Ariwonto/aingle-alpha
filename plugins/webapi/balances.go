@@ -10,8 +10,8 @@ import (
 
 	"github.com/iotaledger/iota.go/address"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 func init() {
@@ -64,7 +64,7 @@ func getBalances(i interface{}, c *gin.Context, _ <-chan struct{}) {
 
 	for _, addr := range query.Addresses {
 
-		balance, _, err := tangle.GetBalanceForAddressWithoutLocking(hornet.HashFromAddressTrytes(addr))
+		balance, _, err := tangle.GetBalanceForAddressWithoutLocking(aingle.HashFromAddressTrytes(addr))
 		if err != nil {
 			e.Error = "Ledger state invalid"
 			c.JSON(http.StatusInternalServerError, e)

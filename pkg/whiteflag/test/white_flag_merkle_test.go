@@ -12,15 +12,15 @@ import (
 
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/whiteflag"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/whiteflag"
 )
 
 func TestWhiteFlagMerkleTreeHash(t *testing.T) {
 
 	// Test vectors taken from the example in the RFC-0012: https://github.com/Wollac/iota-crypto-demo/tree/master/examples/merkle
 
-	var tailHashes []hornet.Hash
+	var tailHashes []aingle.Hash
 
 	tailHashes = append(tailHashes, trinary.MustTrytesToBytes("NOBKDFGZMOWYUKDZITTWBRWA9YPSXCVFENCQFPC9GMJIAIPSSURYIOMYZLGNZXLUAQHHNBSRHNOIJDYZO"))
 	tailHashes = append(tailHashes, trinary.MustTrytesToBytes("IPATPTEZSBMFJRDCRPTCVUQWBAVCAXAVZIDEDL9TSILDFWDMIIFPZIYHKRFFZDYQNKBQBVGYSKMLCYBMR"))

@@ -14,18 +14,18 @@ import (
 	"github.com/iotaledger/iota.go/transaction"
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/compressed"
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/peering"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/profile"
-	"github.com/gohornet/hornet/pkg/protocol/bqueue"
-	"github.com/gohornet/hornet/pkg/protocol/message"
-	"github.com/gohornet/hornet/pkg/protocol/rqueue"
-	"github.com/gohornet/hornet/pkg/protocol/sting"
+	"github.com/Ariwonto/aingle-alpha/pkg/compressed"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/bqueue"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/message"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/rqueue"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/sting"
 )
 
 const (
@@ -82,7 +82,7 @@ func New(requestQueue rqueue.Queue, peerManager *peering.Manager, opts *Options)
 }
 
 func TransactionProcessedCaller(handler interface{}, params ...interface{}) {
-	handler.(func(tx *hornet.Transaction, request *rqueue.Request, p *peer.Peer))(params[0].(*hornet.Transaction), params[1].(*rqueue.Request), params[2].(*peer.Peer))
+	handler.(func(tx *aingle.Transaction, request *rqueue.Request, p *peer.Peer))(params[0].(*aingle.Transaction), params[1].(*rqueue.Request), params[2].(*peer.Peer))
 }
 
 func BroadcastCaller(handler interface{}, params ...interface{}) {
@@ -168,7 +168,7 @@ func (proc *Processor) ValidateTransactionTrytesAndEmit(txTrytes trinary.Trytes)
 // This function does not run within the Processor's worker pool.
 func (proc *Processor) CompressAndEmit(tx *transaction.Transaction, txTrits trinary.Trits) error {
 	txBytesTruncated := compressed.TruncateTx(trinary.MustTritsToBytes(txTrits))
-	hornetTx := hornet.NewTransactionFromTx(tx, txBytesTruncated)
+	hornetTx := aingle.NewTransactionFromTx(tx, txBytesTruncated)
 
 	if timeValid, _ := proc.ValidateTimestamp(hornetTx); !timeValid {
 		return ErrInvalidTimestamp
@@ -234,7 +234,7 @@ func (proc *Processor) processTransactionRequest(p *peer.Peer, data []byte) {
 		return
 	}
 
-	cachedTx := tangle.GetCachedTransactionOrNil(hornet.Hash(data)) // tx +1
+	cachedTx := tangle.GetCachedTransactionOrNil(aingle.Hash(data)) // tx +1
 	if cachedTx == nil {
 		// can't reply if we don't have the requested transaction
 		return
@@ -317,8 +317,8 @@ func (proc *Processor) processWorkUnit(wu *WorkUnit, p *peer.Peer) {
 		return
 	}
 
-	// build Hornet representation of the transaction
-	hornetTx := hornet.NewTransactionFromTx(tx, wu.receivedTxBytes)
+	// build Aingle representation of the transaction
+	hornetTx := aingle.NewTransactionFromTx(tx, wu.receivedTxBytes)
 
 	// mark the transaction as received
 	request := proc.requestQueue.Received(hornetTx.GetTxHash())
@@ -357,7 +357,7 @@ func (proc *Processor) processWorkUnit(wu *WorkUnit, p *peer.Peer) {
 // checks whether the given transaction's timestamp is valid.
 // the timestamp is automatically valid if the transaction is a solid entry point.
 // the timestamp should be in the range of +/- 10 minutes to current time.
-func (proc *Processor) ValidateTimestamp(hornetTx *hornet.Transaction) (valid, broadcast bool) {
+func (proc *Processor) ValidateTimestamp(hornetTx *aingle.Transaction) (valid, broadcast bool) {
 	snapshotTimestamp := tangle.GetSnapshotInfo().Timestamp
 	txTimestamp := hornetTx.GetTimestamp()
 

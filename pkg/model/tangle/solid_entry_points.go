@@ -5,12 +5,12 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 var (
-	solidEntryPoints     *hornet.SolidEntryPoints
+	solidEntryPoints     *aingle.SolidEntryPoints
 	solidEntryPointsLock sync.RWMutex
 
 	ErrSolidEntryPointsAlreadyInitialized = errors.New("solidEntryPoints already initialized")
@@ -45,11 +45,11 @@ func loadSolidEntryPoints() {
 	if points != nil && err == nil {
 		solidEntryPoints = points
 	} else {
-		solidEntryPoints = hornet.NewSolidEntryPoints()
+		solidEntryPoints = aingle.NewSolidEntryPoints()
 	}
 }
 
-func SolidEntryPointsContain(txHash hornet.Hash) bool {
+func SolidEntryPointsContain(txHash aingle.Hash) bool {
 	ReadLockSolidEntryPoints()
 	defer ReadUnlockSolidEntryPoints()
 
@@ -59,7 +59,7 @@ func SolidEntryPointsContain(txHash hornet.Hash) bool {
 	return solidEntryPoints.Contains(txHash)
 }
 
-func SolidEntryPointsIndex(txHash hornet.Hash) (milestone.Index, bool) {
+func SolidEntryPointsIndex(txHash aingle.Hash) (milestone.Index, bool) {
 	ReadLockSolidEntryPoints()
 	defer ReadUnlockSolidEntryPoints()
 
@@ -70,7 +70,7 @@ func SolidEntryPointsIndex(txHash hornet.Hash) (milestone.Index, bool) {
 }
 
 // WriteLockSolidEntryPoints must be held while entering this function
-func SolidEntryPointsAdd(txHash hornet.Hash, milestoneIndex milestone.Index) {
+func SolidEntryPointsAdd(txHash aingle.Hash, milestoneIndex milestone.Index) {
 	if solidEntryPoints == nil {
 		panic(ErrSolidEntryPointsNotInitialized)
 	}

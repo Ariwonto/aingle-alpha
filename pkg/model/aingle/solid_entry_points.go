@@ -1,4 +1,4 @@
-package hornet
+package aingle
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 type SolidEntryPoints struct {

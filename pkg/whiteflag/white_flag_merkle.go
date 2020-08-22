@@ -4,7 +4,7 @@ import (
 	"crypto"
 	"math/bits"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
 )
 
 // Domain separation prefixes
@@ -29,7 +29,7 @@ func (t *Hasher) EmptyRoot() []byte {
 }
 
 // TreeHash computes the Merkle tree hash of the provided hashes.
-func (t *Hasher) TreeHash(tailHashes []hornet.Hash) []byte {
+func (t *Hasher) TreeHash(tailHashes []aingle.Hash) []byte {
 	if len(tailHashes) == 0 {
 		return t.EmptyRoot()
 	}
@@ -42,7 +42,7 @@ func (t *Hasher) TreeHash(tailHashes []hornet.Hash) []byte {
 }
 
 // HashLeaf returns the Merkle tree leaf hash of the input hash.
-func (t *Hasher) HashLeaf(hash hornet.Hash) []byte {
+func (t *Hasher) HashLeaf(hash aingle.Hash) []byte {
 	h := t.New()
 	h.Write([]byte{LeafHashPrefix})
 	h.Write(hash)

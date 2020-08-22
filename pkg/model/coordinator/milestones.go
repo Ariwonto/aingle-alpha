@@ -13,11 +13,11 @@ import (
 	"github.com/iotaledger/iota.go/transaction"
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/pow"
-	"github.com/gohornet/hornet/pkg/t6b1"
-	"github.com/gohornet/hornet/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/pow"
+	"github.com/Ariwonto/aingle-alpha/pkg/t6b1"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
 )
 
 // tagForIndex creates a tag for a specific index.
@@ -31,7 +31,7 @@ func randomTrytesWithRandomLengthPadded(min int, length int) trinary.Trytes {
 }
 
 // createCheckpoint creates a checkpoint transaction.
-func createCheckpoint(trunkHash hornet.Hash, branchHash hornet.Hash, mwm int, powHandler *pow.Handler) (Bundle, error) {
+func createCheckpoint(trunkHash aingle.Hash, branchHash aingle.Hash, mwm int, powHandler *pow.Handler) (Bundle, error) {
 
 	tag := randomTrytesWithRandomLengthPadded(5, consts.TagTrinarySize/3)
 
@@ -69,7 +69,7 @@ func createCheckpoint(trunkHash hornet.Hash, branchHash hornet.Hash, mwm int, po
 }
 
 // createMilestone creates a signed milestone bundle.
-func createMilestone(seed trinary.Hash, index milestone.Index, securityLvl consts.SecurityLevel, trunkHash hornet.Hash, branchHash hornet.Hash, mwm int, merkleTree *merkle.MerkleTree, whiteFlagMerkleRootTreeHash []byte, powHandler *pow.Handler) (Bundle, error) {
+func createMilestone(seed trinary.Hash, index milestone.Index, securityLvl consts.SecurityLevel, trunkHash aingle.Hash, branchHash aingle.Hash, mwm int, merkleTree *merkle.MerkleTree, whiteFlagMerkleRootTreeHash []byte, powHandler *pow.Handler) (Bundle, error) {
 
 	// get the siblings in the current Merkle tree
 	leafSiblings, err := merkleTree.AuditPath(uint32(index))

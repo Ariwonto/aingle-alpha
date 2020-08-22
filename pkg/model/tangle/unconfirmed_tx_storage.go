@@ -7,9 +7,9 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var unconfirmedTxStorage *objectstorage.ObjectStorage
@@ -26,13 +26,13 @@ func (cachedUnconfirmedTxs CachedUnconfirmedTxs) Release(force ...bool) {
 	}
 }
 
-func (c *CachedUnconfirmedTx) GetUnconfirmedTx() *hornet.UnconfirmedTx {
-	return c.Get().(*hornet.UnconfirmedTx)
+func (c *CachedUnconfirmedTx) GetUnconfirmedTx() *aingle.UnconfirmedTx {
+	return c.Get().(*aingle.UnconfirmedTx)
 }
 
 func unconfirmedTxFactory(key []byte) (objectstorage.StorableObject, int, error) {
 
-	unconfirmedTx := hornet.NewUnconfirmedTx(milestone.Index(binary.LittleEndian.Uint32(key[:4])), key[4:53])
+	unconfirmedTx := aingle.NewUnconfirmedTx(milestone.Index(binary.LittleEndian.Uint32(key[:4])), key[4:53])
 	return unconfirmedTx, 53, nil
 }
 
@@ -59,15 +59,15 @@ func configureUnconfirmedTxStorage(store kvstore.KVStore, opts profile.CacheOpts
 }
 
 // GetUnconfirmedTxHashes returns all hashes of unconfirmed transactions for that milestone.
-func GetUnconfirmedTxHashes(msIndex milestone.Index, forceRelease bool) hornet.Hashes {
+func GetUnconfirmedTxHashes(msIndex milestone.Index, forceRelease bool) aingle.Hashes {
 
-	var unconfirmedTxHashes hornet.Hashes
+	var unconfirmedTxHashes aingle.Hashes
 
 	key := make([]byte, 4)
 	binary.LittleEndian.PutUint32(key, uint32(msIndex))
 
 	unconfirmedTxStorage.ForEachKeyOnly(func(key []byte) bool {
-		unconfirmedTxHashes = append(unconfirmedTxHashes, hornet.Hash(key[4:53]))
+		unconfirmedTxHashes = append(unconfirmedTxHashes, aingle.Hash(key[4:53]))
 		return true
 	}, false, key)
 
@@ -75,7 +75,7 @@ func GetUnconfirmedTxHashes(msIndex milestone.Index, forceRelease bool) hornet.H
 }
 
 // UnconfirmedTxConsumer consumes the given unconfirmed transaction during looping through all unconfirmed transactions in the persistence layer.
-type UnconfirmedTxConsumer func(msIndex milestone.Index, txHash hornet.Hash) bool
+type UnconfirmedTxConsumer func(msIndex milestone.Index, txHash aingle.Hash) bool
 
 // ForEachUnconfirmedTx loops over all unconfirmed transactions.
 func ForEachUnconfirmedTx(consumer UnconfirmedTxConsumer, skipCache bool) {
@@ -85,8 +85,8 @@ func ForEachUnconfirmedTx(consumer UnconfirmedTxConsumer, skipCache bool) {
 }
 
 // unconfirmedTx +1
-func StoreUnconfirmedTx(msIndex milestone.Index, txHash hornet.Hash) *CachedUnconfirmedTx {
-	unconfirmedTx := hornet.NewUnconfirmedTx(msIndex, txHash)
+func StoreUnconfirmedTx(msIndex milestone.Index, txHash aingle.Hash) *CachedUnconfirmedTx {
+	unconfirmedTx := aingle.NewUnconfirmedTx(msIndex, txHash)
 	return &CachedUnconfirmedTx{CachedObject: unconfirmedTxStorage.Store(unconfirmedTx)}
 }
 

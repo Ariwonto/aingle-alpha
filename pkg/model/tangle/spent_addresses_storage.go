@@ -9,8 +9,8 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var (
@@ -38,12 +38,12 @@ type CachedSpentAddress struct {
 	objectstorage.CachedObject
 }
 
-func (c *CachedSpentAddress) GetSpentAddress() *hornet.SpentAddress {
-	return c.Get().(*hornet.SpentAddress)
+func (c *CachedSpentAddress) GetSpentAddress() *aingle.SpentAddress {
+	return c.Get().(*aingle.SpentAddress)
 }
 
 func spentAddressFactory(key []byte) (objectstorage.StorableObject, int, error) {
-	sa := hornet.NewSpentAddress(key[:49])
+	sa := aingle.NewSpentAddress(key[:49])
 	return sa, 49, nil
 }
 
@@ -69,12 +69,12 @@ func configureSpentAddressesStorage(store kvstore.KVStore, opts profile.CacheOpt
 }
 
 // spentAddress +-0
-func WasAddressSpentFrom(address hornet.Hash) bool {
+func WasAddressSpentFrom(address aingle.Hash) bool {
 	return spentAddressesStorage.Contains(address)
 }
 
 // spentAddress +-0
-func MarkAddressAsSpent(address hornet.Hash) bool {
+func MarkAddressAsSpent(address aingle.Hash) bool {
 	spentAddressesLock.Lock()
 	defer spentAddressesLock.Unlock()
 
@@ -82,7 +82,7 @@ func MarkAddressAsSpent(address hornet.Hash) bool {
 }
 
 // spentAddress +-0
-func MarkAddressAsSpentWithoutLocking(address hornet.Hash) bool {
+func MarkAddressAsSpentWithoutLocking(address aingle.Hash) bool {
 
 	spentAddress, _, _ := spentAddressFactory(address)
 

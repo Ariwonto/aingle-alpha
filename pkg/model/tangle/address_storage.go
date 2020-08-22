@@ -6,8 +6,8 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var addressesStorage *objectstorage.ObjectStorage
@@ -24,18 +24,18 @@ func (cachedAddresses CachedAddresses) Release(force ...bool) {
 	}
 }
 
-func (c *CachedAddress) GetAddress() *hornet.Address {
-	return c.Get().(*hornet.Address)
+func (c *CachedAddress) GetAddress() *aingle.Address {
+	return c.Get().(*aingle.Address)
 }
 
-func databaseKeyPrefixForAddress(address hornet.Hash) []byte {
+func databaseKeyPrefixForAddress(address aingle.Hash) []byte {
 	return address
 }
 
-func databaseKeyPrefixForAddressTransaction(address hornet.Hash, txHash hornet.Hash, isValue bool) []byte {
+func databaseKeyPrefixForAddressTransaction(address aingle.Hash, txHash aingle.Hash, isValue bool) []byte {
 	var isValueByte byte
 	if isValue {
-		isValueByte = hornet.AddressTxIsValue
+		isValueByte = aingle.AddressTxIsValue
 	}
 
 	result := append(databaseKeyPrefixForAddress(address), isValueByte)
@@ -43,7 +43,7 @@ func databaseKeyPrefixForAddressTransaction(address hornet.Hash, txHash hornet.H
 }
 
 func addressFactory(key []byte) (objectstorage.StorableObject, int, error) {
-	address := hornet.NewAddress(key[:49], key[50:99], key[49] == hornet.AddressTxIsValue)
+	address := aingle.NewAddress(key[:49], key[50:99], key[49] == aingle.AddressTxIsValue)
 	return address, 99, nil
 }
 
@@ -70,15 +70,15 @@ func configureAddressesStorage(store kvstore.KVStore, opts profile.CacheOpts) {
 }
 
 // address +-0
-func GetTransactionHashesForAddress(address hornet.Hash, valueOnly bool, forceRelease bool, maxFind ...int) hornet.Hashes {
+func GetTransactionHashesForAddress(address aingle.Hash, valueOnly bool, forceRelease bool, maxFind ...int) aingle.Hashes {
 
 	searchPrefix := databaseKeyPrefixForAddress(address)
 	if valueOnly {
-		var isValueByte byte = hornet.AddressTxIsValue
+		var isValueByte byte = aingle.AddressTxIsValue
 		searchPrefix = append(searchPrefix, isValueByte)
 	}
 
-	var txHashes hornet.Hashes
+	var txHashes aingle.Hashes
 
 	i := 0
 	addressesStorage.ForEachKeyOnly(func(key []byte) bool {
@@ -95,23 +95,23 @@ func GetTransactionHashesForAddress(address hornet.Hash, valueOnly bool, forceRe
 }
 
 // AddressConsumer consumes the given address during looping through all addresses in the persistence layer.
-type AddressConsumer func(address hornet.Hash, txHash hornet.Hash, isValue bool) bool
+type AddressConsumer func(address aingle.Hash, txHash aingle.Hash, isValue bool) bool
 
 // ForEachAddress loops over all addresses.
 func ForEachAddress(consumer AddressConsumer, skipCache bool) {
 	addressesStorage.ForEachKeyOnly(func(key []byte) bool {
-		return consumer(key[:49], key[50:99], key[49] == hornet.AddressTxIsValue)
+		return consumer(key[:49], key[50:99], key[49] == aingle.AddressTxIsValue)
 	}, skipCache)
 }
 
 // address +1
-func StoreAddress(address hornet.Hash, txHash hornet.Hash, isValue bool) *CachedAddress {
-	addressObj := hornet.NewAddress(address, txHash, isValue)
+func StoreAddress(address aingle.Hash, txHash aingle.Hash, isValue bool) *CachedAddress {
+	addressObj := aingle.NewAddress(address, txHash, isValue)
 	return &CachedAddress{CachedObject: addressesStorage.Store(addressObj)}
 }
 
 // address +-0
-func DeleteAddress(address hornet.Hash, txHash hornet.Hash) {
+func DeleteAddress(address aingle.Hash, txHash aingle.Hash) {
 	addressesStorage.Delete(databaseKeyPrefixForAddressTransaction(address, txHash, false))
 	addressesStorage.Delete(databaseKeyPrefixForAddressTransaction(address, txHash, true))
 }

@@ -1,8 +1,8 @@
 {
-  "name": "hornet-dashboard",
+  "name": "aingle-dashboard",
   "version": "1.0.0",
   "private": true,
-  "description": "HORNET Dashboard",
+  "description": "AINGLE Dashboard",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

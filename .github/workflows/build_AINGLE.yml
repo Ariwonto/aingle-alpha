@@ -1,14 +1,14 @@
-name: Test HORNET
+name: Build AINGLE
 
 on:
   push:
     branches:
       - master
-  pull_request:
+    pull_request:
 
 jobs:
-  test:
-    name: Test HORNET
+  build:
+    name: Build AINGLE
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
@@ -23,9 +23,5 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Test HORNET
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 3
-          command: go test ./...
+      - name: Build AINGLE
+        run: go build -v .

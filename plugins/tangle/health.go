@@ -3,8 +3,8 @@ package tangle
 import (
 	"time"
 
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/plugins/peering"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/plugins/peering"
 )
 
 const (

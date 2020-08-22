@@ -19,8 +19,8 @@ import (
 	"github.com/iotaledger/hive.go/iputils"
 	"github.com/iotaledger/hive.go/netutil"
 
-	"github.com/gohornet/hornet/pkg/autopeering/services"
-	"github.com/gohornet/hornet/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/autopeering/services"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
 )
 
 const (

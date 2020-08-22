@@ -14,9 +14,9 @@ import (
 	"github.com/iotaledger/hive.go/node"
 	"github.com/iotaledger/hive.go/timeutil"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/profile"
-	"github.com/gohornet/hornet/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
 )
 
 var (
@@ -25,7 +25,7 @@ var (
 	LatestGithubVersion = AppVersion
 
 	// AppName app code name
-	AppName = "HORNET"
+	AppName = "AINGLE"
 
 	githubTag *latest.GithubTag
 )
@@ -64,7 +64,7 @@ func configure(plugin *node.Plugin) {
 
 	githubTag = &latest.GithubTag{
 		Owner:             "gohornet",
-		Repository:        "hornet",
+		Repository:        "aingle",
 		FixVersionStrFunc: fixVersion,
 		TagFilterFunc:     includeVersionInCheck,
 	}

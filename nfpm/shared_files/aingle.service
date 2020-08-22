@@ -1,24 +1,24 @@
 [Unit]
-Description=Hornet
+Description=Aingle
 Wants=network-online.target
 After=network-online.target
 
 [Service]
-EnvironmentFile=-/etc/default/hornet
+EnvironmentFile=-/etc/default/aingle
 LimitNOFILE=4096
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=hornet
+SyslogIdentifier=aingle
 PrivateDevices=yes
 PrivateTmp=yes
 ProtectSystem=full
 ProtectHome=yes
 
-User=hornet
-WorkingDirectory=/var/lib/hornet
+User=aingle
+WorkingDirectory=/var/lib/aingle
 TimeoutSec=1200
 Restart=always
-ExecStart=/usr/bin/hornet $OPTIONS
+ExecStart=/usr/bin/aingle $OPTIONS
 
 [Install]
 WantedBy=multi-user.target

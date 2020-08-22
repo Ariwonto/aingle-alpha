@@ -5,11 +5,11 @@ import (
 	"encoding/binary"
 	"errors"
 
-	"github.com/gohornet/hornet/pkg/consts"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/protocol/message"
-	"github.com/gohornet/hornet/pkg/protocol/tlv"
+	"github.com/Ariwonto/aingle-alpha/pkg/consts"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/message"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/tlv"
 )
 
 var (
@@ -108,7 +108,7 @@ func NewTransactionMessage(txData []byte) ([]byte, error) {
 }
 
 // NewTransactionRequestMessage creates a transaction request message.
-func NewTransactionRequestMessage(requestedHash hornet.Hash) ([]byte, error) {
+func NewTransactionRequestMessage(requestedHash aingle.Hash) ([]byte, error) {
 	buf := bytes.NewBuffer(make([]byte, 0, tlv.HeaderMessageDefinition.MaxBytesLength+TransactionRequestMessageDefinition.MaxBytesLength))
 	if err := tlv.WriteHeader(buf, MessageTypeTransactionRequest, TransactionRequestMessageDefinition.MaxBytesLength); err != nil {
 		return nil, err

@@ -11,9 +11,9 @@ import (
 	"github.com/iotaledger/hive.go/objectstorage"
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 func BundleCaller(handler interface{}, params ...interface{}) {
@@ -37,13 +37,13 @@ type Bundle struct {
 	syncutils.RWMutex
 
 	// Key
-	tailTx hornet.Hash
+	tailTx aingle.Hash
 
 	// Value
 	metadata      bitmask.BitMask
 	lastIndex     uint64
-	hash          hornet.Hash
-	headTx        hornet.Hash
+	hash          aingle.Hash
+	headTx        aingle.Hash
 	txs           map[string]struct{}
 	ledgerChanges map[string]int64
 
@@ -51,17 +51,17 @@ type Bundle struct {
 	milestoneIndex     milestone.Index
 }
 
-func (bundle *Bundle) GetBundleHash() hornet.Hash {
+func (bundle *Bundle) GetBundleHash() aingle.Hash {
 	return bundle.hash
 }
 
-func (bundle *Bundle) GetTrunkHash(forceRelease bool) hornet.Hash {
+func (bundle *Bundle) GetTrunkHash(forceRelease bool) aingle.Hash {
 	cachedHeadTxMeta := bundle.GetHeadMetadata() // meta +1
 	defer cachedHeadTxMeta.Release(forceRelease) // meta -1
 	return cachedHeadTxMeta.GetMetadata().GetTrunkHash()
 }
 
-func (bundle *Bundle) GetBranchHash(forceRelease bool) hornet.Hash {
+func (bundle *Bundle) GetBranchHash(forceRelease bool) aingle.Hash {
 	cachedHeadTxMeta := bundle.GetHeadMetadata() // meta +1
 	defer cachedHeadTxMeta.Release(forceRelease) // meta -1
 	return cachedHeadTxMeta.GetMetadata().GetBranchHash()
@@ -87,7 +87,7 @@ func (bundle *Bundle) GetHeadMetadata() *CachedMetadata {
 	return loadBundleTxMetaIfExistsOrPanic(bundle.headTx, bundle.hash) // meta +1
 }
 
-func (bundle *Bundle) GetTailHash() hornet.Hash {
+func (bundle *Bundle) GetTailHash() aingle.Hash {
 	if len(bundle.tailTx) == 0 {
 		panic("tail hash can never be empty")
 	}
@@ -111,11 +111,11 @@ func (bundle *Bundle) GetTailMetadata() *CachedMetadata {
 	return loadBundleTxMetaIfExistsOrPanic(bundle.tailTx, bundle.hash) // meta +1
 }
 
-func (bundle *Bundle) GetTxHashes() hornet.Hashes {
+func (bundle *Bundle) GetTxHashes() aingle.Hashes {
 
-	var values hornet.Hashes
+	var values aingle.Hashes
 	for txHash := range bundle.txs {
-		values = append(values, hornet.Hash(txHash))
+		values = append(values, aingle.Hash(txHash))
 	}
 
 	return values
@@ -125,7 +125,7 @@ func (bundle *Bundle) GetTransactions() CachedTransactions {
 
 	var cachedTxs CachedTransactions
 	for txHash := range bundle.txs {
-		tx := loadBundleTxIfExistsOrPanic(hornet.Hash(txHash), bundle.hash) // tx +1
+		tx := loadBundleTxIfExistsOrPanic(aingle.Hash(txHash), bundle.hash) // tx +1
 		cachedTxs = append(cachedTxs, tx)
 	}
 
@@ -263,10 +263,10 @@ func (bundle *Bundle) ApplySpentAddresses() {
 		spentAddressesEnabled := GetSnapshotInfo().IsSpentAddressesEnabled()
 		for addr, change := range bundle.GetLedgerChanges() {
 			if change < 0 {
-				if spentAddressesEnabled && MarkAddressAsSpent(hornet.Hash(addr)) {
+				if spentAddressesEnabled && MarkAddressAsSpent(aingle.Hash(addr)) {
 					metrics.SharedServerMetrics.SeenSpentAddresses.Inc()
 				}
-				Events.AddressSpent.Trigger(hornet.Hash(addr).Trytes())
+				Events.AddressSpent.Trigger(aingle.Hash(addr).Trytes())
 			}
 		}
 	}
@@ -334,7 +334,7 @@ func (bundle *Bundle) validate() bool {
 	// this is fine within the validation code, since the bundle is only complete when it is solid.
 	// however, as a special rule, milestone bundles might not be solid
 	if !bundle.IsMilestone() && validStrictSemantics {
-		approveeHashes := hornet.Hashes{headTx.GetTrunkHash()}
+		approveeHashes := aingle.Hashes{headTx.GetTrunkHash()}
 		if !bytes.Equal(headTx.GetTrunkHash(), headTx.GetBranchHash()) {
 			approveeHashes = append(approveeHashes, headTx.GetBranchHash())
 		}
@@ -367,7 +367,7 @@ func (bundle *Bundle) calcLedgerChanges() {
 
 	changes := map[string]int64{}
 	for txHash := range bundle.txs {
-		cachedTx := loadBundleTxIfExistsOrPanic(hornet.Hash(txHash), bundle.hash) // tx +1
+		cachedTx := loadBundleTxIfExistsOrPanic(aingle.Hash(txHash), bundle.hash) // tx +1
 		if value := cachedTx.GetTransaction().Tx.Value; value != 0 {
 			changes[string(cachedTx.GetTransaction().GetAddress())] += value
 		}
@@ -388,7 +388,7 @@ func (bundle *Bundle) calcLedgerChanges() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-func loadBundleTxIfExistsOrPanic(txHash hornet.Hash, bundleHash hornet.Hash) *CachedTransaction {
+func loadBundleTxIfExistsOrPanic(txHash aingle.Hash, bundleHash aingle.Hash) *CachedTransaction {
 	cachedTx := GetCachedTransactionOrNil(txHash) // tx +1
 	if cachedTx == nil {
 		log.Panicf("bundle %s has a reference to a non persisted transaction: %s", bundleHash.Trytes(), txHash.Trytes())
@@ -396,7 +396,7 @@ func loadBundleTxIfExistsOrPanic(txHash hornet.Hash, bundleHash hornet.Hash) *Ca
 	return cachedTx
 }
 
-func loadBundleTxMetaIfExistsOrPanic(txHash hornet.Hash, bundleHash hornet.Hash) *CachedMetadata {
+func loadBundleTxMetaIfExistsOrPanic(txHash aingle.Hash, bundleHash aingle.Hash) *CachedMetadata {
 	cachedTxMeta := GetCachedTxMetadataOrNil(txHash) // meta +1
 	if cachedTxMeta == nil {
 		log.Panicf("bundle %s has a reference to a non persisted transaction: %s", bundleHash.Trytes(), txHash.Trytes())

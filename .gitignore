@@ -20,7 +20,7 @@ comnetdb/
 
 # OSX related files
 .DS_Store
-/hornet
+/aingle
 
 # snapshot dir
 snapshots/
@@ -41,7 +41,7 @@ dist/
 snapshot/
 
 # log files
-hornet.log
+aingle.log
 
 # coordinator files
 layer*.csv

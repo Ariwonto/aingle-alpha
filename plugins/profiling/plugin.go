@@ -5,7 +5,7 @@ import (
 	_ "net/http/pprof"
 	"runtime"
 
-	"github.com/gohornet/hornet/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
 	"github.com/iotaledger/hive.go/node"
 )
 

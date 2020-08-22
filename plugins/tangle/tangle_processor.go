@@ -9,15 +9,15 @@ import (
 	"github.com/iotaledger/hive.go/node"
 	"github.com/iotaledger/hive.go/workerpool"
 
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol/rqueue"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/plugins/gossip"
-	metricsplugin "github.com/gohornet/hornet/plugins/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/rqueue"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
+	metricsplugin "github.com/Ariwonto/aingle-alpha/plugins/metrics"
 )
 
 var (
@@ -33,7 +33,7 @@ var (
 func configureTangleProcessor(_ *node.Plugin) {
 
 	receiveTxWorkerPool = workerpool.New(func(task workerpool.Task) {
-		processIncomingTx(task.Param(0).(*hornet.Transaction), task.Param(1).(*rqueue.Request), task.Param(2).(*peer.Peer))
+		processIncomingTx(task.Param(0).(*aingle.Transaction), task.Param(1).(*rqueue.Request), task.Param(2).(*peer.Peer))
 		task.Return(nil)
 	}, workerpool.WorkerCount(receiveTxWorkerCount), workerpool.QueueSize(receiveTxQueueSize))
 
@@ -51,7 +51,7 @@ func configureTangleProcessor(_ *node.Plugin) {
 func runTangleProcessor(_ *node.Plugin) {
 	log.Info("Starting TangleProcessor ...")
 
-	onTransactionProcessed := events.NewClosure(func(transaction *hornet.Transaction, request *rqueue.Request, p *peer.Peer) {
+	onTransactionProcessed := events.NewClosure(func(transaction *aingle.Transaction, request *rqueue.Request, p *peer.Peer) {
 		receiveTxWorkerPool.Submit(transaction, request, p)
 	})
 
@@ -117,7 +117,7 @@ func IsReceiveTxWorkerPoolBusy() bool {
 	return receiveTxWorkerPool.GetPendingQueueSize() > (receiveTxQueueSize / 2)
 }
 
-func processIncomingTx(incomingTx *hornet.Transaction, request *rqueue.Request, p *peer.Peer) {
+func processIncomingTx(incomingTx *aingle.Transaction, request *rqueue.Request, p *peer.Peer) {
 
 	latestMilestoneIndex := tangle.GetLatestMilestoneIndex()
 	isNodeSyncedWithThreshold := tangle.IsNodeSyncedWithThreshold()

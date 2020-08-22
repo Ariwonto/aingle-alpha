@@ -9,13 +9,13 @@ import (
 	"github.com/iotaledger/iota.go/guards"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/dag"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/tipselect"
-	"github.com/gohornet/hornet/plugins/urts"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/dag"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/tipselect"
+	"github.com/Ariwonto/aingle-alpha/plugins/urts"
 )
 
 func init() {
@@ -53,7 +53,7 @@ func getTipInfo(i interface{}, c *gin.Context, _ <-chan struct{}) {
 		return
 	}
 
-	cachedTxMeta := tangle.GetCachedTxMetadataOrNil(hornet.HashFromHashTrytes(query.TailTransaction)) // meta +1
+	cachedTxMeta := tangle.GetCachedTxMetadataOrNil(aingle.HashFromHashTrytes(query.TailTransaction)) // meta +1
 	if cachedTxMeta == nil {
 		e.Error = "unknown tail transaction"
 		c.JSON(http.StatusBadRequest, e)

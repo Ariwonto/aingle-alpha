@@ -4,9 +4,9 @@ import (
 	"github.com/iotaledger/iota.go/consts"
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/t6b1"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/t6b1"
 )
 
 func (bundle *Bundle) setMilestone(milestone bool) {
@@ -36,7 +36,7 @@ func (bundle *Bundle) GetMilestoneIndex() milestone.Index {
 	return bundle.milestoneIndex
 }
 
-func (bundle *Bundle) GetMilestoneHash() hornet.Hash {
+func (bundle *Bundle) GetMilestoneHash() aingle.Hash {
 	return bundle.tailTx
 }
 

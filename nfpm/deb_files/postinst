@@ -4,14 +4,14 @@ set -e
 case "$1" in
 configure)
 
-	chown -R hornet:hornet /var/lib/hornet
+	chown -R aingle:aingle /var/lib/aingle
 
 	if type systemctl >/dev/null 2>/dev/null; then
 		systemctl daemon-reload
 
-		# Only restart if the HORNET service is enabled
-		if systemctl is-enabled -q hornet.service; then
-			systemctl --no-block restart hornet.service
+		# Only restart if the AINGLE service is enabled
+		if systemctl is-enabled -q aingle.service; then
+			systemctl --no-block restart aingle.service
 		fi
 
 	fi

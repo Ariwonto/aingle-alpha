@@ -7,9 +7,9 @@ import (
 	"github.com/iotaledger/hive.go/kvstore"
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/profile"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/profile"
 )
 
 var (
@@ -22,7 +22,7 @@ func TransactionCaller(handler interface{}, params ...interface{}) {
 }
 
 func TransactionHashCaller(handler interface{}, params ...interface{}) {
-	handler.(func(txHash hornet.Hash))(params[0].(hornet.Hash))
+	handler.(func(txHash aingle.Hash))(params[0].(aingle.Hash))
 }
 
 func NewTransactionCaller(handler interface{}, params ...interface{}) {
@@ -62,8 +62,8 @@ func (cachedTxs CachedTransactions) Release(force ...bool) {
 	}
 }
 
-func (c *CachedTransaction) GetTransaction() *hornet.Transaction {
-	return c.tx.Get().(*hornet.Transaction)
+func (c *CachedTransaction) GetTransaction() *aingle.Transaction {
+	return c.tx.Get().(*aingle.Transaction)
 }
 
 // meta +1
@@ -71,12 +71,12 @@ func (c *CachedTransaction) GetCachedMetadata() *CachedMetadata {
 	return &CachedMetadata{c.metadata.Retain()}
 }
 
-func (c *CachedTransaction) GetMetadata() *hornet.TransactionMetadata {
-	return c.metadata.Get().(*hornet.TransactionMetadata)
+func (c *CachedTransaction) GetMetadata() *aingle.TransactionMetadata {
+	return c.metadata.Get().(*aingle.TransactionMetadata)
 }
 
-func (c *CachedMetadata) GetMetadata() *hornet.TransactionMetadata {
-	return c.Get().(*hornet.TransactionMetadata)
+func (c *CachedMetadata) GetMetadata() *aingle.TransactionMetadata {
+	return c.Get().(*aingle.TransactionMetadata)
 }
 
 // tx +1
@@ -97,37 +97,37 @@ func (c *CachedTransaction) Exists() bool {
 
 // tx -1
 // meta -1
-func (c *CachedTransaction) ConsumeTransactionAndMetadata(consumer func(*hornet.Transaction, *hornet.TransactionMetadata)) {
+func (c *CachedTransaction) ConsumeTransactionAndMetadata(consumer func(*aingle.Transaction, *aingle.TransactionMetadata)) {
 
 	c.tx.Consume(func(txObject objectstorage.StorableObject) {
 		c.metadata.Consume(func(metadataObject objectstorage.StorableObject) {
-			consumer(txObject.(*hornet.Transaction), metadataObject.(*hornet.TransactionMetadata))
+			consumer(txObject.(*aingle.Transaction), metadataObject.(*aingle.TransactionMetadata))
 		}, true)
 	}, true)
 }
 
 // tx -1
 // meta -1
-func (c *CachedTransaction) ConsumeTransaction(consumer func(*hornet.Transaction)) {
+func (c *CachedTransaction) ConsumeTransaction(consumer func(*aingle.Transaction)) {
 	defer c.metadata.Release(true)
 	c.tx.Consume(func(object objectstorage.StorableObject) {
-		consumer(object.(*hornet.Transaction))
+		consumer(object.(*aingle.Transaction))
 	}, true)
 }
 
 // tx -1
 // meta -1
-func (c *CachedTransaction) ConsumeMetadata(consumer func(*hornet.TransactionMetadata)) {
+func (c *CachedTransaction) ConsumeMetadata(consumer func(*aingle.TransactionMetadata)) {
 	defer c.tx.Release(true)
 	c.metadata.Consume(func(object objectstorage.StorableObject) {
-		consumer(object.(*hornet.TransactionMetadata))
+		consumer(object.(*aingle.TransactionMetadata))
 	}, true)
 }
 
 // meta -1
-func (c *CachedMetadata) ConsumeMetadata(consumer func(*hornet.TransactionMetadata)) {
+func (c *CachedMetadata) ConsumeMetadata(consumer func(*aingle.TransactionMetadata)) {
 	c.Consume(func(object objectstorage.StorableObject) {
-		consumer(object.(*hornet.TransactionMetadata))
+		consumer(object.(*aingle.TransactionMetadata))
 	}, true)
 }
 
@@ -138,12 +138,12 @@ func (c *CachedTransaction) Release(force ...bool) {
 }
 
 func transactionFactory(key []byte) (objectstorage.StorableObject, int, error) {
-	tx := hornet.NewTransaction(key[:49])
+	tx := aingle.NewTransaction(key[:49])
 	return tx, 49, nil
 }
 
 func metadataFactory(key []byte) (objectstorage.StorableObject, int, error) {
-	tx := hornet.NewTransactionMetadata(key[:49])
+	tx := aingle.NewTransactionMetadata(key[:49])
 	return tx, 49, nil
 }
 
@@ -181,7 +181,7 @@ func configureTransactionStorage(store kvstore.KVStore, opts profile.CacheOpts) 
 }
 
 // tx +1
-func GetCachedTransactionOrNil(txHash hornet.Hash) *CachedTransaction {
+func GetCachedTransactionOrNil(txHash aingle.Hash) *CachedTransaction {
 	cachedTx := txStorage.Load(txHash) // tx +1
 	if !cachedTx.Exists() {
 		cachedTx.Release(true) // tx -1
@@ -204,7 +204,7 @@ func GetCachedTransactionOrNil(txHash hornet.Hash) *CachedTransaction {
 }
 
 // metadata +1
-func GetCachedTxMetadataOrNil(txHash hornet.Hash) *CachedMetadata {
+func GetCachedTxMetadataOrNil(txHash aingle.Hash) *CachedMetadata {
 	cachedMeta := metadataStorage.Load(txHash) // meta +1
 	if !cachedMeta.Exists() {
 		cachedMeta.Release(true) // metadata -1
@@ -218,7 +218,7 @@ func GetCachedTxMetadataOrNil(txHash hornet.Hash) *CachedMetadata {
 
 func addAdditionalTxInfoToMetadata(cachedMetadata objectstorage.CachedObject) {
 	cachedMetadata.Consume(func(metadataObject objectstorage.StorableObject) {
-		metadata := metadataObject.(*hornet.TransactionMetadata)
+		metadata := metadataObject.(*aingle.TransactionMetadata)
 
 		trunkHash := metadata.GetTrunkHash()
 		branchHash := metadata.GetTrunkHash()
@@ -230,7 +230,7 @@ func addAdditionalTxInfoToMetadata(cachedMetadata objectstorage.CachedObject) {
 			}
 
 			cachedTx.Consume(func(transactionObject objectstorage.StorableObject) {
-				tx := transactionObject.(*hornet.Transaction)
+				tx := transactionObject.(*aingle.Transaction)
 				metadata.SetAdditionalTxInfo(tx.GetTrunkHash(), tx.GetBranchHash(), tx.GetBundleHash(), tx.IsHead(), tx.IsTail(), tx.IsValue())
 			}, true)
 		}
@@ -238,26 +238,26 @@ func addAdditionalTxInfoToMetadata(cachedMetadata objectstorage.CachedObject) {
 }
 
 // GetStoredMetadataOrNil returns a metadata object without accessing the cache layer.
-func GetStoredMetadataOrNil(txHash hornet.Hash) *hornet.TransactionMetadata {
+func GetStoredMetadataOrNil(txHash aingle.Hash) *aingle.TransactionMetadata {
 	storedMeta := metadataStorage.LoadObjectFromStore(txHash)
 	if storedMeta == nil {
 		return nil
 	}
-	return storedMeta.(*hornet.TransactionMetadata)
+	return storedMeta.(*aingle.TransactionMetadata)
 }
 
 // ContainsTransaction returns if the given transaction exists in the cache/persistence layer.
-func ContainsTransaction(txHash hornet.Hash) bool {
+func ContainsTransaction(txHash aingle.Hash) bool {
 	return txStorage.Contains(txHash)
 }
 
 // TransactionExistsInStore returns if the given transaction exists in the persistence layer.
-func TransactionExistsInStore(txHash hornet.Hash) bool {
+func TransactionExistsInStore(txHash aingle.Hash) bool {
 	return txStorage.ObjectExistsInStore(txHash)
 }
 
 // tx +1
-func StoreTransactionIfAbsent(transaction *hornet.Transaction) (cachedTx *CachedTransaction, newlyAdded bool) {
+func StoreTransactionIfAbsent(transaction *aingle.Transaction) (cachedTx *CachedTransaction, newlyAdded bool) {
 
 	// Store tx + metadata atomically in the same callback
 	var cachedMeta objectstorage.CachedObject
@@ -266,7 +266,7 @@ func StoreTransactionIfAbsent(transaction *hornet.Transaction) (cachedTx *Cached
 		newlyAdded = true
 
 		metadata, _, _ := metadataFactory(transaction.GetTxHash())
-		metadata.(*hornet.TransactionMetadata).SetAdditionalTxInfo(transaction.GetTrunkHash(), transaction.GetBranchHash(), transaction.GetBundleHash(), transaction.IsHead(), transaction.IsTail(), transaction.IsValue())
+		metadata.(*aingle.TransactionMetadata).SetAdditionalTxInfo(transaction.GetTrunkHash(), transaction.GetBranchHash(), transaction.GetBundleHash(), transaction.IsHead(), transaction.IsTail(), transaction.IsValue())
 		cachedMeta = metadataStorage.Store(metadata) // meta +1
 
 		transaction.Persist()
@@ -284,7 +284,7 @@ func StoreTransactionIfAbsent(transaction *hornet.Transaction) (cachedTx *Cached
 }
 
 // TransactionHashConsumer consumes the given transaction hash during looping through all transactions in the persistence layer.
-type TransactionHashConsumer func(txHash hornet.Hash) bool
+type TransactionHashConsumer func(txHash aingle.Hash) bool
 
 // ForEachTransactionHash loops over all transaction hashes.
 func ForEachTransactionHash(consumer TransactionHashConsumer, skipCache bool) {
@@ -301,14 +301,14 @@ func ForEachTransactionMetadataHash(consumer TransactionHashConsumer, skipCache 
 }
 
 // DeleteTransaction deletes the transaction and metadata in the cache/persistence layer.
-func DeleteTransaction(txHash hornet.Hash) {
+func DeleteTransaction(txHash aingle.Hash) {
 	// metadata has to be deleted before the tx, otherwise we could run into a data race in the object storage
 	metadataStorage.Delete(txHash)
 	txStorage.Delete(txHash)
 }
 
 // DeleteTransactionMetadata deletes the metadata in the cache/persistence layer.
-func DeleteTransactionMetadata(txHash hornet.Hash) {
+func DeleteTransactionMetadata(txHash aingle.Hash) {
 	metadataStorage.Delete(txHash)
 }
 

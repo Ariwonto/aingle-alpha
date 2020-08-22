@@ -13,13 +13,13 @@ import (
 	"github.com/iotaledger/hive.go/node"
 	"github.com/iotaledger/hive.go/timeutil"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/peering"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol"
-	"github.com/gohornet/hornet/pkg/protocol/handshake"
-	"github.com/gohornet/hornet/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/handshake"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
 )
 
 const (
@@ -37,7 +37,7 @@ var (
 func Manager() *peering.Manager {
 	managerOnce.Do(func() {
 		// init protocol package with handshake data
-		cooAddrBytes := hornet.HashFromAddressTrytes(config.NodeConfig.GetString(config.CfgCoordinatorAddress))
+		cooAddrBytes := aingle.HashFromAddressTrytes(config.NodeConfig.GetString(config.CfgCoordinatorAddress))
 		mwm := config.NodeConfig.GetInt(config.CfgCoordinatorMWM)
 		bindAddr := config.NodeConfig.GetString(config.CfgNetGossipBindAddress)
 		if err := protocol.Init(cooAddrBytes, mwm, bindAddr); err != nil {

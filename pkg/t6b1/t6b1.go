@@ -1,4 +1,4 @@
-// Package ternary implements ternary encoding as specified by the IOTA Protocol RFC-0015.
+// Package ternary implements ternary encoding as specified by the AINGLE Protocol RFC-0015.
 // https://github.com/Wollac/iota-crypto-demo/blob/master/pkg/encoding/ternary/ternary.go
 package t6b1
 

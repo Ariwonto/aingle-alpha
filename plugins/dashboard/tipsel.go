@@ -6,10 +6,10 @@ import (
 	"github.com/iotaledger/hive.go/node"
 	"github.com/iotaledger/hive.go/workerpool"
 
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/pkg/tipselect"
-	"github.com/gohornet/hornet/plugins/urts"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/tipselect"
+	"github.com/Ariwonto/aingle-alpha/plugins/urts"
 )
 
 var tipSelMetricWorkerCount = 1

@@ -8,11 +8,11 @@ import (
 	"github.com/iotaledger/hive.go/workerpool"
 	"github.com/iotaledger/iota.go/transaction"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	tanglemodel "github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/plugins/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	tanglemodel "github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/plugins/tangle"
 )
 
 var (
@@ -44,7 +44,7 @@ func runLiveFeed() {
 	newTxRateLimiter := time.NewTicker(time.Second / 10)
 
 	onReceivedNewTransaction := events.NewClosure(func(cachedTx *tanglemodel.CachedTransaction, latestMilestoneIndex milestone.Index, latestSolidMilestoneIndex milestone.Index) {
-		cachedTx.ConsumeTransaction(func(tx *hornet.Transaction) {
+		cachedTx.ConsumeTransaction(func(tx *aingle.Transaction) {
 			if !tanglemodel.IsNodeSyncedWithThreshold() {
 				return
 			}

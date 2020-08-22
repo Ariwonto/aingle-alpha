@@ -1,10 +1,10 @@
 /usr/bin/systemctl daemon-reload >/dev/null 2>&1 ||:
 if [ $1 -ge 1 ]; then
-    /sbin/service hornet status  >/dev/null 2>&1 || exit 0
-    /sbin/service hornet upgrade >/dev/null 2>&1 || echo \
-        "Binary upgrade failed, please check hornet's log"
+    /sbin/service aingle status  >/dev/null 2>&1 || exit 0
+    /sbin/service aingle upgrade >/dev/null 2>&1 || echo \
+        "Binary upgrade failed, please check aingle's log"
 fi
-rm -rf /var/lib/hornet/snapshots/* \
-       /etc/default/hornet \
-       /var/lib/hornet/mainnetdb/* \
-       /var/lib/hornet/comnetdb/*
+rm -rf /var/lib/aingle/snapshots/* \
+       /etc/default/aingle \
+       /var/lib/aingle/mainnetdb/* \
+       /var/lib/aingle/comnetdb/*

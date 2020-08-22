@@ -17,12 +17,12 @@ import (
 	"github.com/labstack/gommon/log"
 	"go.uber.org/atomic"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol"
-	"github.com/gohornet/hornet/pkg/protocol/handshake"
-	"github.com/gohornet/hornet/pkg/protocol/sting"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/handshake"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/sting"
 )
 
 const (

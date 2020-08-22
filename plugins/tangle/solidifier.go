@@ -9,14 +9,14 @@ import (
 	"github.com/iotaledger/hive.go/syncutils"
 	"github.com/iotaledger/hive.go/workerpool"
 
-	"github.com/gohornet/hornet/pkg/dag"
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/utils"
-	"github.com/gohornet/hornet/pkg/whiteflag"
-	"github.com/gohornet/hornet/plugins/gossip"
+	"github.com/Ariwonto/aingle-alpha/pkg/dag"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/pkg/whiteflag"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
 )
 
 const (
@@ -92,10 +92,10 @@ func markTransactionAsSolid(cachedTxMeta *tangle.CachedMetadata) {
 
 		invalid := false
 		for approveeTailTxHash := range approveeTailTxHashes {
-			cachedApproveeBndl := tangle.GetCachedBundleOrNil(hornet.Hash(approveeTailTxHash)) // bundle +1
+			cachedApproveeBndl := tangle.GetCachedBundleOrNil(aingle.Hash(approveeTailTxHash)) // bundle +1
 			if cachedApproveeBndl == nil {
 				// bundle must be created here
-				log.Panicf("BundleSolid: TxHash: %v, approvee bundle not found: TailTxHash: %v", cachedTxMeta.GetMetadata().GetTxHash().Trytes(), hornet.Hash(approveeTailTxHash).Trytes())
+				log.Panicf("BundleSolid: TxHash: %v, approvee bundle not found: TailTxHash: %v", cachedTxMeta.GetMetadata().GetTxHash().Trytes(), aingle.Hash(approveeTailTxHash).Trytes())
 			}
 			bndl := cachedApproveeBndl.GetBundle() // bundle -1
 			cachedApproveeBndl.Release(true)
@@ -130,7 +130,7 @@ func solidQueueCheck(cachedTxMetas map[string]*tangle.CachedMetadata, milestoneI
 	}
 
 	txsChecked := 0
-	var txsToSolidify hornet.Hashes
+	var txsToSolidify aingle.Hashes
 	txsToRequest := make(map[string]struct{})
 
 	// collect all tx to solidify by traversing the tangle
@@ -161,7 +161,7 @@ func solidQueueCheck(cachedTxMetas map[string]*tangle.CachedMetadata, milestoneI
 			return nil
 		},
 		// called on missing approvees
-		func(approveeHash hornet.Hash) error {
+		func(approveeHash aingle.Hash) error {
 			// tx does not exist => request missing tx
 			txsToRequest[string(approveeHash)] = struct{}{}
 			return nil
@@ -179,9 +179,9 @@ func solidQueueCheck(cachedTxMetas map[string]*tangle.CachedMetadata, milestoneI
 	tCollect := time.Now()
 
 	if len(txsToRequest) > 0 {
-		var txHashes hornet.Hashes
+		var txHashes aingle.Hashes
 		for txHash := range txsToRequest {
-			txHashes = append(txHashes, hornet.Hash(txHash))
+			txHashes = append(txHashes, aingle.Hash(txHash))
 		}
 		gossip.RequestMultiple(txHashes, milestoneIndex, true)
 		log.Warnf("Stopped solidifier due to missing tx -> Requested missing txs (%d), collect: %v", len(txHashes), tCollect.Sub(ts).Truncate(time.Millisecond))
@@ -227,7 +227,7 @@ func solidifyFutureConeOfTx(cachedTxMeta *tangle.CachedMetadata) error {
 		}
 	}()
 
-	txHashes := hornet.Hashes{cachedTxMeta.GetMetadata().GetTxHash()}
+	txHashes := aingle.Hashes{cachedTxMeta.GetMetadata().GetTxHash()}
 
 	return solidifyFutureCone(cachedTxMetas, txHashes, true, nil)
 }
@@ -237,7 +237,7 @@ func solidifyFutureConeOfTx(cachedTxMeta *tangle.CachedMetadata) error {
 // as a special property, invocations of the yielded function share the same 'already traversed' set to circumvent
 // walking the future cone of the same transactions multiple times.
 // all cachedTxMetas have to be released outside.
-func solidifyFutureCone(cachedTxMetas map[string]*tangle.CachedMetadata, txHashes hornet.Hashes, gossipSolidify bool, abortSignal chan struct{}) error {
+func solidifyFutureCone(cachedTxMetas map[string]*tangle.CachedMetadata, txHashes aingle.Hashes, gossipSolidify bool, abortSignal chan struct{}) error {
 	traversed := map[string]struct{}{}
 	nonSolidTxs := map[string]struct{}{}
 
@@ -340,7 +340,7 @@ func solidifyPastCone(cachedTxMetas map[string]*tangle.CachedMetadata, nonSolidT
 			return nil
 		},
 		// called on missing approvees
-		func(approveeHash hornet.Hash) error {
+		func(approveeHash aingle.Hash) error {
 			// tx does not exist => the cone is not solid
 			return tangle.ErrTransactionNotFound
 		},

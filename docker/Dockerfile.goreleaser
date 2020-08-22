@@ -1,22 +1,22 @@
 FROM alpine:latest
 WORKDIR /app
 
-LABEL org.label-schema.description="HORNET - The IOTA community node"
+LABEL org.label-schema.description="AINGLE - The AINGLE community node"
 LABEL org.label-schema.name="Ariwonto/aingle-alpha"
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.vcs-url="https://https://github.com/Ariwonto/aingle-alpha"
 LABEL org.label-schema.usage="https://https://github.com/Ariwonto/aingle-alpha/blob/master/DOCKER.md"
 
-COPY ["hornet", "/app/"]
+COPY ["aingle", "/app/"]
 RUN apk --no-cache add ca-certificates gnupg wget tini\
  && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub\
  && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-2.30-r0.apk\
  && apk add glibc-2.30-r0.apk\
  && rm glibc-2.30-r0.apk\
- && addgroup --gid 39999 hornet\
- && adduser -h /app -s /bin/sh -G hornet -u 39999 -D hornet\
- && chmod +x /app/hornet\
- && chown hornet:hornet -R /app;
+ && addgroup --gid 39999 aingle\
+ && adduser -h /app -s /bin/sh -G aingle -u 39999 -D aingle\
+ && chmod +x /app/aingle\
+ && chown aingle:aingle -R /app;
 
 # Not exposing ports, as it might be more efficient to run this on host network because of performance gain.
 # | Host mode networking can be useful to optimize performance, and in situations where a container needs
@@ -24,5 +24,5 @@ RUN apk --no-cache add ca-certificates gnupg wget tini\
 # | “userland-proxy” is created for each port.
 # Source: https://docs.docker.com/network/host/
 
-USER hornet:hornet
-ENTRYPOINT ["/sbin/tini", "--", "/app/hornet"]
+USER aingle:aingle
+ENTRYPOINT ["/sbin/tini", "--", "/app/aingle"]

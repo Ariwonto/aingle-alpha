@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 type ApproveesTraverser struct {
@@ -76,7 +76,7 @@ func (t *ApproveesTraverser) reset() {
 // the traversal stops due to no more transactions passing the given condition.
 // It is a DFS with trunk / branch.
 // Caution: condition func is not in DFS order
-func (t *ApproveesTraverser) Traverse(startTxHash hornet.Hash, traverseSolidEntryPoints bool, traverseTailsOnly bool, forceRelease bool) error {
+func (t *ApproveesTraverser) Traverse(startTxHash aingle.Hash, traverseSolidEntryPoints bool, traverseTailsOnly bool, forceRelease bool) error {
 
 	// make sure only one traversal is running
 	t.traverserLock.Lock()
@@ -104,7 +104,7 @@ func (t *ApproveesTraverser) Traverse(startTxHash hornet.Hash, traverseSolidEntr
 // Afterwards it traverses the approvees (past cone) of the given branch transaction.
 // It is a DFS with trunk / branch.
 // Caution: condition func is not in DFS order
-func (t *ApproveesTraverser) TraverseTrunkAndBranch(trunkTxHash hornet.Hash, branchTxHash hornet.Hash, traverseSolidEntryPoints bool, traverseTailsOnly bool, forceRelease bool) error {
+func (t *ApproveesTraverser) TraverseTrunkAndBranch(trunkTxHash aingle.Hash, branchTxHash aingle.Hash, traverseSolidEntryPoints bool, traverseTailsOnly bool, forceRelease bool) error {
 
 	// make sure only one traversal is running
 	t.traverserLock.Lock()
@@ -151,7 +151,7 @@ func (t *ApproveesTraverser) processStackApprovees() error {
 
 	// load candidate tx
 	ele := t.stack.Front()
-	currentTxHash := ele.Value.(hornet.Hash)
+	currentTxHash := ele.Value.(aingle.Hash)
 
 	if _, wasProcessed := t.processed[string(currentTxHash)]; wasProcessed {
 		// transaction was already processed
@@ -219,7 +219,7 @@ func (t *ApproveesTraverser) processStackApprovees() error {
 		return nil
 	}
 
-	var trunkHash, branchHash hornet.Hash
+	var trunkHash, branchHash aingle.Hash
 
 	if !t.traverseTailsOnly {
 		trunkHash = cachedTxMeta.GetMetadata().GetTrunkHash()
@@ -239,7 +239,7 @@ func (t *ApproveesTraverser) processStackApprovees() error {
 		branchHash = cachedBundle.GetBundle().GetBranchHash(true)
 	}
 
-	approveeHashes := hornet.Hashes{trunkHash}
+	approveeHashes := aingle.Hashes{trunkHash}
 	if !bytes.Equal(trunkHash, branchHash) {
 		approveeHashes = append(approveeHashes, branchHash)
 	}

@@ -1,7 +1,7 @@
 # Documentation at http://goreleaser.com
 
 # Project name
-project_name: HORNET
+project_name: AINGLE
 
 # Environment variables
 env:
@@ -10,8 +10,8 @@ env:
 # Builds
 builds:
   # Linux AMD64
-  - id: hornet-linux-amd64
-    binary: hornet
+  - id: aingle-linux-amd64
+    binary: aingle
     env:
       - CGO_ENABLED=1
     ldflags:
@@ -24,8 +24,8 @@ builds:
     goarch:
       - amd64
   # Linux ARM64 statically linked
-  - id: hornet-linux-arm64
-    binary: hornet
+  - id: aingle-linux-arm64
+    binary: aingle
     env:
       - CGO_ENABLED=1
       - CC=aarch64-linux-musl-gcc
@@ -40,8 +40,8 @@ builds:
     goarch:
       - arm64
   # Windows AMD64
-  - id: hornet-windows-amd64
-    binary: hornet
+  - id: aingle-windows-amd64
+    binary: aingle
     env:
       - CGO_ENABLED=1
       - CC=x86_64-w64-mingw32-gcc
@@ -56,8 +56,8 @@ builds:
     goarch:
       - amd64
   # macOS AMD64
-  - id: hornet-macOS-amd64
-    binary: hornet
+  - id: aingle-macOS-amd64
+    binary: aingle
     env:
       - CGO_ENABLED=0
     ldflags:
@@ -95,27 +95,27 @@ archives:
 # DEB and RPM packages
 nfpms:
   - id: nfpm
-    package_name: hornet
+    package_name: aingle
     file_name_template: '{{ tolower .ProjectName }}_{{ replace .Version "v" "" }}_{{ .Arch }}'
     vendor: GoReleaser
     license: Apache 2.0
     maintainer: iotaledger
     homepage: https://https://github.com/Ariwonto/aingle-alpha
-    description: HORNET is a powerful IOTA fullnode software.
+    description: AINGLE is a powerful AINGLE fullnode software.
     formats:
       - deb
       - rpm
     bindir: /usr/bin
     files:
-      "nfpm/shared_files/hornet.service": "/lib/systemd/system/hornet.service"
+      "nfpm/shared_files/aingle.service": "/lib/systemd/system/aingle.service"
     config_files:
-      "config.json": "/var/lib/hornet/config.json"
-      "config_comnet.json": "/var/lib/hornet/config_comnet.json"
-      "config_devnet.json": "/var/lib/hornet/config_devnet.json"
-      "mqtt_config.json": "/var/lib/hornet/mqtt_config.json"
-      "peering.json": "/var/lib/hornet/peering.json"
-      "profiles.json": "/var/lib/hornet/profiles.json"
-      "nfpm/shared_files/hornet.env": "/etc/default/hornet"
+      "config.json": "/var/lib/aingle/config.json"
+      "config_comnet.json": "/var/lib/aingle/config_comnet.json"
+      "config_devnet.json": "/var/lib/aingle/config_devnet.json"
+      "mqtt_config.json": "/var/lib/aingle/mqtt_config.json"
+      "peering.json": "/var/lib/aingle/peering.json"
+      "profiles.json": "/var/lib/aingle/profiles.json"
+      "nfpm/shared_files/aingle.env": "/etc/default/aingle"
     dependencies:
       - systemd
       - wget
@@ -154,4 +154,4 @@ release:
   name_template: "{{.ProjectName}}-{{.Version}}"
   github:
     owner: iotaledger
-    name: hornet
+    name: aingle

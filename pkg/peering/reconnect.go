@@ -9,9 +9,9 @@ import (
 	"github.com/iotaledger/hive.go/network"
 	"github.com/pkg/errors"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol"
 )
 
 // Reconnect instructs the manager to initiate connections to all peers residing in the reconnect pool.

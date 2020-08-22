@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/iotaledger/iota.go/consts"
@@ -31,7 +31,7 @@ func init() {
 func TestHeaviestSelector_SelectTipsChain(t *testing.T) {
 	hps := New()
 	// create a chain
-	var lastHash = hornet.NullHashBytes
+	var lastHash = aingle.NullHashBytes
 	for i := 1; i <= numTestTxs; i++ {
 		bndl := newTestBundle(i, lastHash, lastHash)
 		hps.OnNewSolidBundle(bndl)
@@ -46,9 +46,9 @@ func TestHeaviestSelector_SelectTipsChain(t *testing.T) {
 func TestHeaviestSelector_SelectTipsChains(t *testing.T) {
 	hps := New()
 
-	var lastHash = [2]hornet.Hash{}
+	var lastHash = [2]aingle.Hash{}
 	for i := 0; i < 2; i++ {
-		lastHash[i] = hornet.NullHashBytes
+		lastHash[i] = aingle.NullHashBytes
 		for j := 1; j <= numTestTxs; j++ {
 			bndl := newTestBundle(i*numTestTxs+j, lastHash[i], lastHash[i])
 			hps.OnNewSolidBundle(bndl)
@@ -65,7 +65,7 @@ func TestHeaviestSelector_SelectTipsCancel(t *testing.T) {
 	hps := New()
 	// create a very large blow ball
 	for i := 1; i <= 10000; i++ {
-		bndl := newTestBundle(i, hornet.NullHashBytes, hornet.NullHashBytes)
+		bndl := newTestBundle(i, aingle.NullHashBytes, aingle.NullHashBytes)
 		hps.OnNewSolidBundle(bndl)
 	}
 
@@ -87,7 +87,7 @@ func TestHeaviestSelector_SelectTipsCancel(t *testing.T) {
 
 func TestHeaviestSelector_Concurrent(t *testing.T) {
 	hps := New()
-	hashes := []hornet.Hash{hornet.NullHashBytes}
+	hashes := []aingle.Hash{aingle.NullHashBytes}
 	for i := 0; i < 1000; i++ {
 		bndl := newTestBundle(i, hashes[rand.Intn(len(hashes))], hashes[rand.Intn(len(hashes))])
 		hps.OnNewSolidBundle(bndl)
@@ -115,7 +115,7 @@ func TestHeaviestSelector_Concurrent(t *testing.T) {
 
 func BenchmarkHeaviestSelector_OnNewSolidTransaction(b *testing.B) {
 	hps := New()
-	hashes := []hornet.Hash{hornet.NullHashBytes}
+	hashes := []aingle.Hash{aingle.NullHashBytes}
 	data := make([]*tangle.Bundle, numBenchmarkTxs)
 	for i := 0; i < numBenchmarkTxs; i++ {
 		data[i] = newTestBundle(i, hashes[rand.Intn(len(hashes))], hashes[rand.Intn(len(hashes))])
@@ -126,14 +126,14 @@ func BenchmarkHeaviestSelector_OnNewSolidTransaction(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		hps.OnNewSolidTransaction(data[i%numBenchmarkTxs])
 		if i%numBenchmarkTxs == numBenchmarkTxs-1 {
-			hps.SetRoot(hornet.NullHashBytes)
+			hps.SetRoot(aingle.NullHashBytes)
 		}
 	}
 }
 
 func BenchmarkHeaviestSelector_SelectTips(b *testing.B) {
 	hps := New()
-	hashes := []hornet.Hash{hornet.NullHashBytes}
+	hashes := []aingle.Hash{aingle.NullHashBytes}
 	for i := 0; i < numBenchmarkTxs; i++ {
 		bndl := newTestBundle(i, hashes[rand.Intn(len(hashes))], hashes[rand.Intn(len(hashes))])
 		hps.OnNewSolidBundle(bndl)
@@ -146,7 +146,7 @@ func BenchmarkHeaviestSelector_SelectTips(b *testing.B) {
 	}
 }
 
-func newTestBundle(idx int, trunk, branch hornet.Hash) *tangle.Bundle {
+func newTestBundle(idx int, trunk, branch aingle.Hash) *tangle.Bundle {
 	bndl := tangle.Bundle{
 
 	}
@@ -157,6 +157,6 @@ func newTestBundle(idx int, trunk, branch hornet.Hash) *tangle.Bundle {
 		TrunkTransaction:  trunk.Trytes(),
 		BranchTransaction: branch.Trytes(),
 	}
-	return hornet.NewTransactionFromTx(tx, nil)
+	return aingle.NewTransactionFromTx(tx, nil)
 }
 */

@@ -13,12 +13,12 @@ import (
 	"github.com/iotaledger/iota.go/trinary"
 	"go.uber.org/atomic"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/metrics"
-	"github.com/gohornet/hornet/pkg/shutdown"
-	"github.com/gohornet/hornet/pkg/utils"
-	"github.com/gohornet/hornet/plugins/coordinator"
-	"github.com/gohornet/hornet/plugins/urts"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/metrics"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/plugins/coordinator"
+	"github.com/Ariwonto/aingle-alpha/plugins/urts"
 )
 
 var (

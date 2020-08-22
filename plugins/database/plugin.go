@@ -11,9 +11,9 @@ import (
 	"github.com/iotaledger/hive.go/node"
 	"github.com/iotaledger/hive.go/syncutils"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
 )
 
 var (
@@ -39,7 +39,7 @@ func configure(plugin *node.Plugin) {
 
 	if !tangle.IsCorrectDatabaseVersion() {
 		if !tangle.UpdateDatabaseVersion() {
-			log.Panic("HORNET database version mismatch. The database scheme was updated. Please delete the database folder and start with a new local snapshot.")
+			log.Panic("AINGLE database version mismatch. The database scheme was updated. Please delete the database folder and start with a new local snapshot.")
 		}
 	}
 

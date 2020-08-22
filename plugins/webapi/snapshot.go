@@ -2,15 +2,16 @@ package webapi
 
 import (
 	"fmt"
+	milestone2 "github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 	"net/http"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/plugins/snapshot"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/plugins/snapshot"
 )
 
 func init() {
@@ -29,7 +30,7 @@ func createSnapshotFile(i interface{}, c *gin.Context, abortSignal <-chan struct
 
 	snapshotFilePath := filepath.Join(filepath.Dir(config.NodeConfig.GetString(config.CfgLocalSnapshotsPath)), fmt.Sprintf("export_%d.bin", query.TargetIndex))
 
-	if err := snapshot.CreateLocalSnapshot(milestone.Index(query.TargetIndex), snapshotFilePath, false, abortSignal); err != nil {
+	if err := snapshot.CreateLocalSnapshot(milestone2.Index(milestone.Index(query.TargetIndex)), snapshotFilePath, false, abortSignal); err != nil {
 		e.Error = err.Error()
 		c.JSON(http.StatusInternalServerError, e)
 		return

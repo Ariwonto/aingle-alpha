@@ -13,9 +13,9 @@ import (
 	"github.com/iotaledger/iota.go/guards"
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 const (
@@ -308,7 +308,7 @@ func findTransaction(hash trinary.Hash) (*ExplorerTx, error) {
 		return nil, errors.Wrapf(ErrInvalidParameter, "hash invalid: %s", hash)
 	}
 
-	cachedTx := tangle.GetCachedTransactionOrNil(hornet.HashFromHashTrytes(hash)) // tx +1
+	cachedTx := tangle.GetCachedTransactionOrNil(aingle.HashFromHashTrytes(hash)) // tx +1
 	if cachedTx == nil {
 		return nil, errors.Wrapf(ErrNotFound, "tx %s unknown", hash)
 	}
@@ -327,7 +327,7 @@ func findTag(tag trinary.Trytes) (*ExplorerTag, error) {
 		return nil, errors.Wrapf(ErrInvalidParameter, "tag invalid length: %s", tag)
 	}
 
-	txHashes := tangle.GetTagHashes(hornet.HashFromTagTrytes(tag), true, MaxTagResults)
+	txHashes := tangle.GetTagHashes(aingle.HashFromTagTrytes(tag), true, MaxTagResults)
 	if len(txHashes) == 0 {
 		return nil, errors.Wrapf(ErrNotFound, "tag %s unknown", tag)
 	}
@@ -357,7 +357,7 @@ func findBundles(hash trinary.Hash) ([][]*ExplorerTx, error) {
 		return nil, errors.Wrapf(ErrInvalidParameter, "hash invalid: %s", hash)
 	}
 
-	cachedBndls := tangle.GetBundles(hornet.HashFromHashTrytes(hash), true, MaxBundleResults) // bundle +1
+	cachedBndls := tangle.GetBundles(aingle.HashFromHashTrytes(hash), true, MaxBundleResults) // bundle +1
 	if len(cachedBndls) == 0 {
 		return nil, errors.Wrapf(ErrNotFound, "bundle %s unknown", hash)
 	}
@@ -390,7 +390,7 @@ func findAddress(hash trinary.Hash, valueOnly bool) (*ExplorerAddress, error) {
 		return nil, errors.Wrapf(ErrInvalidParameter, "hash invalid: %s", hash)
 	}
 
-	addr := hornet.HashFromAddressTrytes(hash)
+	addr := aingle.HashFromAddressTrytes(hash)
 
 	txHashes := tangle.GetTransactionHashesForAddress(addr, valueOnly, true, MaxTransactionsForAddressResults)
 

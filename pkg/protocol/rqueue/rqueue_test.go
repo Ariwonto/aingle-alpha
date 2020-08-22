@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/protocol/rqueue"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/rqueue"
 	"github.com/iotaledger/iota.go/trinary"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,11 +14,11 @@ func TestRequestQueue(t *testing.T) {
 	q := rqueue.New()
 
 	var (
-		hashA = hornet.Hash(trinary.MustTrytesToBytes("A"))
-		hashB = hornet.Hash(trinary.MustTrytesToBytes("B"))
-		hashZ = hornet.Hash(trinary.MustTrytesToBytes("Z"))
-		hashC = hornet.Hash(trinary.MustTrytesToBytes("C"))
-		hashD = hornet.Hash(trinary.MustTrytesToBytes("D"))
+		hashA = aingle.Hash(trinary.MustTrytesToBytes("A"))
+		hashB = aingle.Hash(trinary.MustTrytesToBytes("B"))
+		hashZ = aingle.Hash(trinary.MustTrytesToBytes("Z"))
+		hashC = aingle.Hash(trinary.MustTrytesToBytes("C"))
+		hashD = aingle.Hash(trinary.MustTrytesToBytes("D"))
 	)
 
 	requests := []*rqueue.Request{
@@ -64,7 +64,7 @@ func TestRequestQueue(t *testing.T) {
 		// since we have two request under the same milestone/priority
 		// we need to make a special case
 		if i == 1 || i == 2 {
-			assert.Contains(t, hornet.Hashes{hashB, hashZ}, r.Hash)
+			assert.Contains(t, aingle.Hashes{hashB, hashZ}, r.Hash)
 		} else {
 			assert.Equal(t, r, requests[i])
 		}

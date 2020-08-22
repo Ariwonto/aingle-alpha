@@ -11,9 +11,9 @@ import (
 
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/utils"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/utils"
 )
 
 var (
@@ -35,7 +35,7 @@ type HeaviestSelector struct {
 }
 
 type bundleTail struct {
-	hash hornet.Hash    // hash of the corresponding tail transaction
+	hash aingle.Hash    // hash of the corresponding tail transaction
 	tip  *list.Element  // pointer to the element in the tip list
 	refs *bitset.BitSet // BitSet of all the referenced transactions
 }
@@ -166,7 +166,7 @@ func (s *HeaviestSelector) selectTip(tipsList *bundleTailList) (*bundleTail, uin
 // if at least one heaviest branch tip was found, "randomTipsPerCheckpoint" random tips are added
 // to add some additional randomness to prevent parasite chain attacks.
 // the selection is cancelled after a fixed deadline. in this case, it returns the current collected tips.
-func (s *HeaviestSelector) SelectTips(minRequiredTips int) (hornet.Hashes, error) {
+func (s *HeaviestSelector) SelectTips(minRequiredTips int) (aingle.Hashes, error) {
 
 	// create a working list with the current tips to release the lock to allow faster iteration
 	// and to get a frozen view of the tangle, so an attacker can't
@@ -179,7 +179,7 @@ func (s *HeaviestSelector) SelectTips(minRequiredTips int) (hornet.Hashes, error
 		return nil, ErrNoTipsAvailable
 	}
 
-	var result hornet.Hashes
+	var result aingle.Hashes
 
 	// run the tip selection for at most 0.1s to keep the view on the tangle recent; this should be plenty
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(s.heaviestBranchSelectionDeadline))

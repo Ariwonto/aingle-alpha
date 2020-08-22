@@ -1,4 +1,4 @@
-package hornet
+package aingle
 
 import (
 	"encoding/binary"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 type UnconfirmedTx struct {

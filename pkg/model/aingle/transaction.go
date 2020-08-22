@@ -1,4 +1,4 @@
-package hornet
+package aingle
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 
 	"github.com/iotaledger/hive.go/objectstorage"
 
-	"github.com/gohornet/hornet/pkg/compressed"
+	"github.com/Ariwonto/aingle-alpha/pkg/compressed"
 )
 
 type Transaction struct {

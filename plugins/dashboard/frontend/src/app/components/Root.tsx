@@ -52,7 +52,7 @@ export class Root extends React.Component<Props, any> {
                             src="/assets/favicon.svg"
                             width="40"
                             className="d-inline-block"
-                            alt="Hornet"
+                            alt="Aingle"
                         />
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="main-navbar-nav" />

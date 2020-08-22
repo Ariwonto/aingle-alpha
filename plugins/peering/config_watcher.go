@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/gohornet/hornet/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
 )
 
 func configurePeerConfigWatcher() {

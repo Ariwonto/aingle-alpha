@@ -6,8 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 type ApproversTraverser struct {
@@ -57,7 +57,7 @@ func (t *ApproversTraverser) reset() {
 // Traverse starts to traverse the approvers (future cone) of the given start transaction until
 // the traversal stops due to no more transactions passing the given condition.
 // It is unsorted BFS because the approvers are not ordered in the database.
-func (t *ApproversTraverser) Traverse(startTxHash hornet.Hash, forceRelease bool) error {
+func (t *ApproversTraverser) Traverse(startTxHash aingle.Hash, forceRelease bool) error {
 
 	// make sure only one traversal is running
 	t.traverserLock.Lock()
@@ -91,7 +91,7 @@ func (t *ApproversTraverser) processStackApprovers() error {
 
 	// load candidate tx
 	ele := t.stack.Front()
-	currentTxHash := ele.Value.(hornet.Hash)
+	currentTxHash := ele.Value.(aingle.Hash)
 
 	// remove the transaction from the stack
 	t.stack.Remove(ele)

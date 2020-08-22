@@ -1,10 +1,10 @@
-# HORNET Dashboard
+# AINGLE Dashboard
 
 Programmed using modern web technologies.
 
 ### Dashboard in dev mode
 
-1. Make sure to set `dashboard.dev` to true, to enable HORNET to serve assets
+1. Make sure to set `dashboard.dev` to true, to enable AINGLE to serve assets
    from the webpack-dev-server.
 2. Install all needed npm modules via `yarn install`.
 3. Run a webpack-dev-server instance by running `yarn start` within the `frontend` directory.
@@ -21,4 +21,4 @@ We are using [packr2](https://github.com/gobuffalo/packr/tree/master/v2) to wrap
 3. Change to the `plugins/dashboard` directory.
 4. Run `packr2`.
 5. `plugins/dashboard/packrd` should have been modified.
-6. Done. Now you can build HORNET and your dashboard changes will be included within the binary.
+6. Done. Now you can build AINGLE and your dashboard changes will be included within the binary.

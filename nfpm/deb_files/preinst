@@ -4,18 +4,18 @@ set -e
 
 case "$1" in
 install)
-    # if hornet user doesn't exist, create it
-    if ! id hornet >/dev/null 2>&1; then
-        useradd --no-create-home --system hornet >/dev/null
+    # if aingle user doesn't exist, create it
+    if ! id aingle >/dev/null 2>&1; then
+        useradd --no-create-home --system aingle >/dev/null
     fi
-    mkdir -p /var/lib/hornet
+    mkdir -p /var/lib/aingle
     echo "WARNING: The autopeering plugin will disclose your public IP address to possibly all nodes and entry points. Please disable the plugin prior to the first start if you do not want this to happen!"
     ;;
 
 upgrade)
-    echo "Stopping HORNET. This may take a while..."
-    systemctl stop hornet.service
-    echo "HORNET stopped, start update..."
+    echo "Stopping AINGLE. This may take a while..."
+    systemctl stop aingle.service
+    echo "AINGLE stopped, start update..."
     ;;
 
 abort-upgrade) ;;

@@ -12,10 +12,10 @@ import (
 	"github.com/iotaledger/iota.go/guards"
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/config"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/plugins/gossip"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/plugins/gossip"
 )
 
 func init() {
@@ -94,7 +94,7 @@ func findTransactions(i interface{}, c *gin.Context, _ <-chan struct{}) {
 			return
 		}
 
-		txHashes = append(txHashes, tangle.GetBundleTransactionHashes(hornet.HashFromHashTrytes(bdl), true, maxResults-len(txHashes)).Trytes()...)
+		txHashes = append(txHashes, tangle.GetBundleTransactionHashes(aingle.HashFromHashTrytes(bdl), true, maxResults-len(txHashes)).Trytes()...)
 	}
 
 	// Searching for transactions that contains the given address
@@ -109,7 +109,7 @@ func findTransactions(i interface{}, c *gin.Context, _ <-chan struct{}) {
 			addr = addr[:81]
 		}
 
-		txHashes = append(txHashes, tangle.GetTransactionHashesForAddress(hornet.HashFromAddressTrytes(addr), query.ValueOnly, true, maxResults-len(txHashes)).Trytes()...)
+		txHashes = append(txHashes, tangle.GetTransactionHashesForAddress(aingle.HashFromAddressTrytes(addr), query.ValueOnly, true, maxResults-len(txHashes)).Trytes()...)
 	}
 
 	// Searching for all approvers of the given transactions
@@ -120,7 +120,7 @@ func findTransactions(i interface{}, c *gin.Context, _ <-chan struct{}) {
 			return
 		}
 
-		txHashes = append(txHashes, tangle.GetApproverHashes(hornet.HashFromHashTrytes(approveeHash), maxResults-len(txHashes)).Trytes()...)
+		txHashes = append(txHashes, tangle.GetApproverHashes(aingle.HashFromHashTrytes(approveeHash), maxResults-len(txHashes)).Trytes()...)
 	}
 
 	// Searching for transactions that contain the given tag
@@ -137,7 +137,7 @@ func findTransactions(i interface{}, c *gin.Context, _ <-chan struct{}) {
 			return
 		}
 
-		txHashes = append(txHashes, tangle.GetTagHashes(hornet.HashFromTagTrytes(tag), true, maxResults-len(txHashes)).Trytes()...)
+		txHashes = append(txHashes, tangle.GetTagHashes(aingle.HashFromTagTrytes(tag), true, maxResults-len(txHashes)).Trytes()...)
 	}
 
 	c.JSON(http.StatusOK, FindTransactionsReturn{Hashes: txHashes})

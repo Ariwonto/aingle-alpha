@@ -18,11 +18,11 @@ import (
 	"github.com/iotaledger/iota.go/transaction"
 	"github.com/iotaledger/iota.go/trinary"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/pow"
-	"github.com/gohornet/hornet/pkg/whiteflag"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/pow"
+	"github.com/Ariwonto/aingle-alpha/pkg/whiteflag"
 )
 
 // Bundle represents grouped together transactions forming a transfer.
@@ -46,7 +46,7 @@ type CoordinatorEvents struct {
 	IssuedMilestone *events.Event
 }
 
-// Coordinator is used to issue signed transactions, called "milestones" to secure an IOTA network and prevent double spends.
+// Coordinator is used to issue signed transactions, called "milestones" to secure an AINGLE network and prevent double spends.
 type Coordinator struct {
 	milestoneLock syncutils.Mutex
 
@@ -159,10 +159,10 @@ func (coo *Coordinator) InitState(bootstrap bool, startIndex milestone.Index) er
 
 		if startIndex == 1 {
 			// if we bootstrap a network, NullHash has to be set as a solid entry point
-			tangle.SolidEntryPointsAdd(hornet.NullHashBytes, startIndex)
+			tangle.SolidEntryPointsAdd(aingle.NullHashBytes, startIndex)
 		}
 
-		latestMilestoneHash := hornet.NullHashBytes
+		latestMilestoneHash := aingle.NullHashBytes
 		if startIndex != 1 {
 			// If we don't start a new network, the last milestone has to be referenced
 			cachedBndl := tangle.GetMilestoneOrNil(latestMilestoneFromDatabase)
@@ -178,7 +178,7 @@ func (coo *Coordinator) InitState(bootstrap bool, startIndex milestone.Index) er
 		state.LatestMilestoneHash = latestMilestoneHash
 		state.LatestMilestoneIndex = startIndex - 1
 		state.LatestMilestoneTime = 0
-		state.LatestMilestoneTransactions = hornet.Hashes{hornet.NullHashBytes}
+		state.LatestMilestoneTransactions = aingle.Hashes{aingle.NullHashBytes}
 
 		coo.state = state
 		coo.bootstrapped = false
@@ -209,7 +209,7 @@ func (coo *Coordinator) InitState(bootstrap bool, startIndex milestone.Index) er
 }
 
 // createAndSendMilestone creates a milestone, sends it to the network and stores a new coordinator state file.
-func (coo *Coordinator) createAndSendMilestone(trunkHash hornet.Hash, branchHash hornet.Hash, newMilestoneIndex milestone.Index) error {
+func (coo *Coordinator) createAndSendMilestone(trunkHash aingle.Hash, branchHash aingle.Hash, newMilestoneIndex milestone.Index) error {
 
 	cachedTxMetas := make(map[string]*tangle.CachedMetadata)
 	cachedBundles := make(map[string]*tangle.CachedBundle)
@@ -243,15 +243,15 @@ func (coo *Coordinator) createAndSendMilestone(trunkHash hornet.Hash, branchHash
 		return err
 	}
 
-	txHashes := hornet.Hashes{}
+	txHashes := aingle.Hashes{}
 	for _, tx := range b {
-		txHashes = append(txHashes, hornet.HashFromHashTrytes(tx.Hash))
+		txHashes = append(txHashes, aingle.HashFromHashTrytes(tx.Hash))
 	}
 
 	tailTx := b[0]
 
 	// always reference the last milestone directly to speed up syncing
-	latestMilestoneHash := hornet.HashFromHashTrytes(tailTx.Hash)
+	latestMilestoneHash := aingle.HashFromHashTrytes(tailTx.Hash)
 
 	coo.state.LatestMilestoneHash = latestMilestoneHash
 	coo.state.LatestMilestoneIndex = newMilestoneIndex
@@ -269,7 +269,7 @@ func (coo *Coordinator) createAndSendMilestone(trunkHash hornet.Hash, branchHash
 
 // Bootstrap creates the first milestone, if the network was not bootstrapped yet.
 // Returns critical errors.
-func (coo *Coordinator) Bootstrap() (hornet.Hash, error) {
+func (coo *Coordinator) Bootstrap() (aingle.Hash, error) {
 
 	coo.milestoneLock.Lock()
 	defer coo.milestoneLock.Unlock()
@@ -292,7 +292,7 @@ func (coo *Coordinator) Bootstrap() (hornet.Hash, error) {
 // a checkpoint can contain multiple chained transactions to reference big parts of the unconfirmed cone.
 // this is done to keep the confirmation rate as high as possible, even if there is an attack ongoing.
 // new checkpoints always reference the last checkpoint or the last milestone if it is the first checkpoint after a new milestone.
-func (coo *Coordinator) IssueCheckpoint(checkpointIndex int, lastCheckpointHash hornet.Hash, tips hornet.Hashes) (hornet.Hash, error) {
+func (coo *Coordinator) IssueCheckpoint(checkpointIndex int, lastCheckpointHash aingle.Hash, tips aingle.Hashes) (aingle.Hash, error) {
 
 	if len(tips) == 0 {
 		return nil, ErrNoTipsGiven
@@ -315,7 +315,7 @@ func (coo *Coordinator) IssueCheckpoint(checkpointIndex int, lastCheckpointHash 
 			return nil, err
 		}
 
-		lastCheckpointHash = hornet.HashFromHashTrytes(b[0].Hash)
+		lastCheckpointHash = aingle.HashFromHashTrytes(b[0].Hash)
 
 		coo.Events.IssuedCheckpointTransaction.Trigger(checkpointIndex, i, len(tips), lastCheckpointHash)
 	}
@@ -325,7 +325,7 @@ func (coo *Coordinator) IssueCheckpoint(checkpointIndex int, lastCheckpointHash 
 
 // IssueMilestone creates the next milestone.
 // Returns non-critical and critical errors.
-func (coo *Coordinator) IssueMilestone(trunkHash hornet.Hash, branchHash hornet.Hash) (hornet.Hash, error, error) {
+func (coo *Coordinator) IssueMilestone(trunkHash aingle.Hash, branchHash aingle.Hash) (aingle.Hash, error, error) {
 
 	coo.milestoneLock.Lock()
 	defer coo.milestoneLock.Unlock()

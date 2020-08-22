@@ -5,8 +5,8 @@ import (
 	"github.com/iotaledger/hive.go/events"
 	"github.com/iotaledger/hive.go/workerpool"
 
-	"github.com/gohornet/hornet/pkg/shutdown"
-	spammerPlugin "github.com/gohornet/hornet/plugins/spammer"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
+	spammerPlugin "github.com/Ariwonto/aingle-alpha/plugins/spammer"
 )
 
 var (

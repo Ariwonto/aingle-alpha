@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
 )
 
 // State stores the latest state of the coordinator.
@@ -17,11 +17,11 @@ type State struct {
 	encoding.BinaryUnmarshaler
 
 	LatestMilestoneIndex milestone.Index
-	LatestMilestoneHash  hornet.Hash
+	LatestMilestoneHash  aingle.Hash
 	LatestMilestoneTime  int64
 
 	// LatestMilestoneTransactions are the transaction hashes of the latest milestone
-	LatestMilestoneTransactions hornet.Hashes
+	LatestMilestoneTransactions aingle.Hashes
 }
 
 // MarshalBinary returns the binary representation of the coordinator state.
@@ -64,15 +64,15 @@ func (cs *State) UnmarshalBinary(data []byte) error {
 	}
 
 	cs.LatestMilestoneIndex = milestone.Index(binary.LittleEndian.Uint32(data[0:4]))
-	cs.LatestMilestoneHash = hornet.Hash(data[4:53])
+	cs.LatestMilestoneHash = aingle.Hash(data[4:53])
 	cs.LatestMilestoneTime = int64(binary.LittleEndian.Uint64(data[53:61]))
-	cs.LatestMilestoneTransactions = make(hornet.Hashes, 0)
+	cs.LatestMilestoneTransactions = make(aingle.Hashes, 0)
 
 	latestMilestoneTransactionsCount := (len(data) - 61) / 49
 
 	offset := 61
 	for i := 0; i < latestMilestoneTransactionsCount; i++ {
-		cs.LatestMilestoneTransactions = append(cs.LatestMilestoneTransactions, hornet.Hash(data[offset:offset+49]))
+		cs.LatestMilestoneTransactions = append(cs.LatestMilestoneTransactions, aingle.Hash(data[offset:offset+49]))
 		offset += 49
 	}
 

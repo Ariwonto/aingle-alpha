@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gohornet/hornet/pkg/config"
+	"github.com/Ariwonto/aingle-alpha/pkg/config"
 	"github.com/iotaledger/hive.go/autopeering/peer/service"
 )
 

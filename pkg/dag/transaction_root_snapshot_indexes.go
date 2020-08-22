@@ -3,14 +3,14 @@ package dag
 import (
 	"bytes"
 
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
 )
 
 // UpdateOutdatedRootSnapshotIndexes updates the transaction root snapshot indexes of the given transactions.
 // the "outdatedTransactions" should be ordered from oldest to latest to avoid recursion.
-func UpdateOutdatedRootSnapshotIndexes(outdatedTransactions hornet.Hashes, lsmi milestone.Index) {
+func UpdateOutdatedRootSnapshotIndexes(outdatedTransactions aingle.Hashes, lsmi milestone.Index) {
 	for _, outdatedTxHash := range outdatedTransactions {
 		cachedTxMeta := tangle.GetCachedTxMetadataOrNil(outdatedTxHash)
 		if cachedTxMeta == nil {
@@ -45,7 +45,7 @@ func GetTransactionRootSnapshotIndexes(cachedTxMeta *tangle.CachedMetadata, lsmi
 
 	// collect all approvees in the cone that are not confirmed,
 	// are no solid entry points and have no recent calculation index
-	var outdatedTransactions hornet.Hashes
+	var outdatedTransactions aingle.Hashes
 
 	startTxHash := cachedTxMeta.GetMetadata().GetTxHash()
 
@@ -92,12 +92,12 @@ func GetTransactionRootSnapshotIndexes(cachedTxMeta *tangle.CachedMetadata, lsmi
 			return nil
 		},
 		// called on missing approvees
-		func(approveeHash hornet.Hash) error {
+		func(approveeHash aingle.Hash) error {
 			// since this is also called for the future cone, there may be missing approvees
 			return tangle.ErrTransactionNotFound
 		},
 		// called on solid entry points
-		func(txHash hornet.Hash) {
+		func(txHash aingle.Hash) {
 			// if the approvee is a solid entry point, use the index of the solid entry point as ORTSI
 			entryPointIndex, _ := tangle.SolidEntryPointsIndex(txHash)
 			updateIndexes(entryPointIndex, entryPointIndex)
@@ -130,7 +130,7 @@ func GetTransactionRootSnapshotIndexes(cachedTxMeta *tangle.CachedMetadata, lsmi
 // we have to walk the future cone, and update the past cone of all transactions that reference an old cone.
 // as a special property, invocations of the yielded function share the same 'already traversed' set to circumvent
 // walking the future cone of the same transactions multiple times.
-func UpdateTransactionRootSnapshotIndexes(txHashes hornet.Hashes, lsmi milestone.Index) {
+func UpdateTransactionRootSnapshotIndexes(txHashes aingle.Hashes, lsmi milestone.Index) {
 	traversed := map[string]struct{}{}
 
 	// we update all transactions in order from oldest to latest

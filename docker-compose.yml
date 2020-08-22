@@ -1,11 +1,11 @@
 version: '3'
 services:
-  hornet:
+  aingle:
     build:
       context: .
       # For aarch64/arm64 use Dockerfile.arm64
       dockerfile: docker/Dockerfile
-    image: hornet:latest
+    image: aingle:latest
     # Best performance via host network:
     network_mode: host
     # Else:

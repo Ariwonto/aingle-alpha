@@ -6,15 +6,15 @@ import (
 
 	"github.com/iotaledger/hive.go/daemon"
 
-	"github.com/gohornet/hornet/pkg/dag"
-	"github.com/gohornet/hornet/pkg/model/hornet"
-	"github.com/gohornet/hornet/pkg/model/milestone"
-	"github.com/gohornet/hornet/pkg/model/tangle"
-	"github.com/gohornet/hornet/pkg/peering/peer"
-	"github.com/gohornet/hornet/pkg/protocol/helpers"
-	"github.com/gohornet/hornet/pkg/protocol/rqueue"
-	"github.com/gohornet/hornet/pkg/protocol/sting"
-	"github.com/gohornet/hornet/pkg/shutdown"
+	"github.com/Ariwonto/aingle-alpha/pkg/dag"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/aingle"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/milestone"
+	"github.com/Ariwonto/aingle-alpha/pkg/model/tangle"
+	"github.com/Ariwonto/aingle-alpha/pkg/peering/peer"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/helpers"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/rqueue"
+	"github.com/Ariwonto/aingle-alpha/pkg/protocol/sting"
+	"github.com/Ariwonto/aingle-alpha/pkg/shutdown"
 )
 
 var (
@@ -129,7 +129,7 @@ func enqueueAndSignal(r *rqueue.Request) bool {
 
 // Request enqueues a request to the request queue for the given transaction if it isn't a solid entry point
 // and is not contained in the database already.
-func Request(hash hornet.Hash, msIndex milestone.Index, preventDiscard ...bool) bool {
+func Request(hash aingle.Hash, msIndex milestone.Index, preventDiscard ...bool) bool {
 	if tangle.SolidEntryPointsContain(hash) {
 		return false
 	}
@@ -149,7 +149,7 @@ func Request(hash hornet.Hash, msIndex milestone.Index, preventDiscard ...bool) 
 }
 
 // RequestMultiple works like Request but takes multiple transaction hashes.
-func RequestMultiple(hashes hornet.Hashes, msIndex milestone.Index, preventDiscard ...bool) {
+func RequestMultiple(hashes aingle.Hashes, msIndex milestone.Index, preventDiscard ...bool) {
 	for _, hash := range hashes {
 		Request(hash, msIndex, preventDiscard...)
 	}
@@ -158,7 +158,7 @@ func RequestMultiple(hashes hornet.Hashes, msIndex milestone.Index, preventDisca
 // RequestApprovees enqueues requests for the approvees of the given transaction to the request queue, if the
 // given transaction is not a solid entry point and neither its approvees are and also not in the database.
 func RequestApprovees(cachedTx *tangle.CachedTransaction, msIndex milestone.Index, preventDiscard ...bool) {
-	cachedTx.ConsumeMetadata(func(metadata *hornet.TransactionMetadata) {
+	cachedTx.ConsumeMetadata(func(metadata *aingle.TransactionMetadata) {
 		txHash := metadata.GetTxHash()
 
 		if tangle.SolidEntryPointsContain(txHash) {
@@ -225,7 +225,7 @@ func MemoizedRequestMissingMilestoneApprovees(preventDiscard ...bool) func(ms mi
 				return nil
 			},
 			// called on missing approvees
-			func(approveeHash hornet.Hash) error {
+			func(approveeHash aingle.Hash) error {
 				Request(approveeHash, ms, preventDiscard...)
 				return nil
 			},
