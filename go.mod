@@ -13,7 +13,7 @@ require (
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-zeromq/zmq4 v0.10.0
 	github.com/gobuffalo/packr/v2 v2.8.0
-	github.com/Ariwonto/aingle-alpha v0.0.6
+	github.com/Ariwonto/aingle-alpha v0.0.7
 	github.com/google/go-github v17.0.0+incompatible // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/gorilla/websocket v1.4.2
